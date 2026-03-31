@@ -1,0 +1,3542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2d5a3d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="London 2026">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%232d5a3d' width='180' height='180'/><text x='50%' y='50%' font-size='100' font-weight='700' fill='%23c07d3e' text-anchor='middle' dominant-baseline='central' font-family='serif'>🇬🇧</text></svg>">
+  <title>London 2026 Trip Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    /* #7: Font fallback for offline first-load */
+    @font-face {
+      font-family: 'DM Sans';
+      font-style: normal;
+      font-weight: 300 600;
+      font-display: swap;
+      src: local('DM Sans'), local('DMSans-Regular');
+    }
+    @font-face {
+      font-family: 'Playfair Display';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: local('Playfair Display Bold'), local('PlayfairDisplay-Bold');
+    }
+  </style>
+  <style>
+    :root {
+      --bg: #f7f5f0;
+      --card: #ffffff;
+      --card-border: #e8e2d8;
+      --primary: #2d5a3d;
+      --primary-light: #4a8c62;
+      --accent: #c07d3e;
+      --accent-light: #d4a253;
+      --text: #2c2c2c;
+      --text-dim: #7a7568;
+      --tag-reservation: #c07d3e;
+      --tag-ticket: #3a7ca5;
+      --marathon-red: #e07800;
+      --marathon-bg: #fef6ed;
+      --transport-bg: #eef4f8;
+      --transport-border: #b8d4e8;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+      font-weight: 700;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: #fff;
+      padding: 2rem 1.5rem 1.5rem;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(45, 90, 61, 0.15);
+    }
+
+    header h1 {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: -1px;
+      color: var(--accent-light);
+    }
+
+    header .subtitle {
+      font-size: 1rem;
+      font-weight: 400;
+      opacity: 0.95;
+      margin-bottom: 0.25rem;
+    }
+
+    header .flag {
+      font-size: 1.5rem;
+      margin-left: 0.5rem;
+    }
+
+    /* Flight Info Bar */
+    .flight-bar {
+      background: var(--card);
+      border-bottom: 1px solid var(--card-border);
+      padding: 1rem 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      font-size: 0.85rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .flight-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .flight-info strong {
+      color: var(--primary);
+      min-width: 70px;
+    }
+
+    .flight-info .route {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Day Pill Navigation */
+    .day-pills {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      display: flex;
+      gap: 0.5rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .day-pill {
+      flex-shrink: 0;
+      padding: 0.5rem 1rem;
+      border: 2px solid var(--card-border);
+      background: var(--card);
+      border-radius: 2rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .day-pill:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .day-pill.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(45, 90, 61, 0.25);
+    }
+
+    .day-pill.marathon {
+      background: var(--marathon-red);
+      border-color: var(--marathon-red);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(196, 69, 54, 0.25);
+    }
+
+    .day-pill.marathon:hover {
+      background: #b03c2b;
+      border-color: #b03c2b;
+    }
+
+    /* Main Content */
+    main {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      gap: 1rem;
+    }
+
+    /* Day Cards */
+    .day-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .day-card.marathon {
+      border: 2px solid var(--marathon-red);
+      background: linear-gradient(135deg, var(--card) 0%, var(--marathon-bg) 100%);
+    }
+
+    .day-card-header {
+      padding: 1.5rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      transition: background 0.3s ease;
+    }
+
+    .day-card.marathon .day-card-header {
+      background: linear-gradient(135deg, var(--marathon-red) 0%, #f09030 100%);
+    }
+
+    .day-card-header:hover {
+      background: linear-gradient(135deg, var(--primary-light) 0%, #5a9c7a 100%);
+    }
+
+    .day-card.marathon .day-card-header:hover {
+      background: linear-gradient(135deg, #f09030 0%, var(--marathon-red) 100%);
+    }
+
+    .day-header-content {
+      flex: 1;
+    }
+
+    .day-number {
+      font-size: 2.5rem;
+      font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 0.25rem;
+      color: var(--accent-light);
+    }
+
+    .day-date {
+      font-size: 0.85rem;
+      opacity: 0.9;
+      margin-bottom: 0.25rem;
+    }
+
+    .day-theme {
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .day-toggle {
+      font-size: 1.5rem;
+      transition: transform 0.3s ease;
+      align-self: center;
+    }
+
+    .day-card.expanded .day-toggle {
+      transform: rotate(180deg);
+    }
+
+    /* Day Content */
+    .day-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .day-card.expanded .day-content {
+      max-height: 3000px;
+    }
+
+    .stop-list {
+      padding: 1.5rem;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .stop {
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      background: #fafaf8;
+      border-left: 4px solid var(--primary-light);
+      border-radius: 4px;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .stop:hover {
+      background: #f5f3f0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+
+    .stop-time {
+      font-weight: 600;
+      color: var(--accent);
+      font-size: 0.9rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .stop-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .stop-emoji {
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .stop-name {
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .stop-details {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      margin-left: 1.75rem;
+      margin-top: 0.25rem;
+    }
+
+    /* Tags */
+    .tags {
+      margin-top: 0.75rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-left: 1.75rem;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .tag-reservation {
+      background: rgba(192, 125, 62, 0.15);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+
+    .tag-ticket {
+      background: rgba(58, 124, 165, 0.15);
+      color: var(--tag-ticket);
+      border: 1px solid var(--tag-ticket);
+    }
+
+    .tag-ticket-btn {
+      background: var(--tag-ticket);
+      color: #fff;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-left: 0.5rem;
+    }
+
+    .tag-ticket-btn:hover {
+      background: #2e5f7e;
+      box-shadow: 0 2px 6px rgba(58, 124, 165, 0.3);
+    }
+
+    /* Transport */
+    .transport-section {
+      background: var(--transport-bg);
+      border-left: 4px solid var(--transport-border);
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+
+    .transport-header {
+      font-weight: 600;
+      color: var(--accent);
+      font-size: 0.85rem;
+      margin-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(192, 125, 62, 0.2);
+      padding-bottom: 0.35rem;
+    }
+
+    .transport-step {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .transport-step:last-child {
+      margin-bottom: 0;
+    }
+
+    .transport-step-icon {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .step-board {
+      background: var(--primary-light);
+    }
+
+    .step-ride {
+      background: var(--tag-ticket);
+    }
+
+    .step-transfer {
+      background: var(--marathon-red);
+    }
+
+    .step-exit {
+      background: var(--accent);
+    }
+
+    .step-walk {
+      background: var(--text-dim);
+    }
+
+    .transport-time {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    /* Ticket Viewer Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .modal.open {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 2rem;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .modal-content {
+      background: var(--card);
+      border-radius: 12px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 1.3rem;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-dim);
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+    }
+
+    .modal-close:hover {
+      background: var(--bg);
+      color: var(--primary);
+    }
+
+    .modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0;
+    }
+
+    .modal-body iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Marathon Day Special Styling */
+    .day-card.marathon .stop {
+      border-left-color: var(--marathon-red);
+      background: rgba(196, 69, 54, 0.05);
+    }
+
+    .day-card.marathon .stop:hover {
+      background: rgba(196, 69, 54, 0.08);
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 2rem;
+      }
+
+      .day-pills {
+        padding: 0.75rem 1rem;
+      }
+
+      .day-pill {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+      }
+
+      main {
+        padding: 1rem;
+      }
+
+      .day-card {
+        margin-bottom: 1rem;
+      }
+
+      .flight-bar {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        font-size: 0.8rem;
+      }
+
+      .modal-content {
+        width: 95%;
+        max-height: 95vh;
+      }
+    }
+
+    /* Walking Transition */
+    .walk-transition {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      margin: 0.25rem 0 0.75rem 0;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      font-style: italic;
+      border-left: 2px dashed var(--card-border);
+      margin-left: 1rem;
+    }
+
+    .walk-transition .walk-icon {
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    /* Inline Transport (between stops) */
+    .inline-transport {
+      background: var(--transport-bg);
+      border: 1px solid var(--transport-border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      margin: 0.25rem 0 0.75rem 0;
+    }
+
+    .inline-transport-title {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .inline-transport .transport-step {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.82rem;
+      margin-bottom: 0.35rem;
+      color: var(--text);
+    }
+
+    .inline-transport .transport-step:last-of-type {
+      margin-bottom: 0;
+    }
+
+    .inline-transport .transport-step-icon {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .inline-transport .transport-time {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 0.4rem;
+      padding-top: 0.35rem;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    /* Maps Links */
+    .maps-link {
+      display: inline-block;
+      padding: 0.35rem 0.75rem;
+      background-color: var(--primary);
+      color: #fff;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-decoration: none;
+      margin: 0.25rem 0.25rem 0 0;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .maps-link:hover {
+      background-color: var(--primary-light);
+      text-decoration: none;
+    }
+
+    .maps-link::before {
+      content: '📍 ';
+    }
+
+    /* Checklists */
+    .stop-checklist {
+      margin-left: 1.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .stop-checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .stop-checklist-item:last-child {
+      border-bottom: none;
+    }
+
+    .stop-checklist-item input[type="checkbox"] {
+      margin-top: 0.2rem;
+      width: 20px;
+      height: 20px;
+      accent-color: var(--primary);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .stop-checklist-item label {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      cursor: pointer;
+      line-height: 1.4;
+    }
+
+    .stop-checklist-item input:checked + label {
+      text-decoration: line-through;
+      opacity: 0.5;
+    }
+
+    /* External Links */
+    .stop-name a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+
+    .stop-name a:hover {
+      border-bottom: 1px solid currentColor;
+    }
+
+    .stop-name a::after {
+      content: ' ↗';
+      font-size: 0.75em;
+      margin-left: 0.2em;
+      opacity: 0.6;
+    }
+
+    /* Resources Page */
+    .resources-section {
+      display: none;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    .resources-section.active {
+      display: block;
+    }
+
+    .resource-group {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .resource-group-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: #fff;
+      padding: 0.75rem 1.25rem;
+      font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .resource-item {
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .resource-item:last-child {
+      border-bottom: none;
+    }
+
+    .resource-item-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    .resource-item-content {
+      flex: 1;
+    }
+
+    .resource-item-name {
+      font-weight: 500;
+      font-size: 0.9rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .resource-item-name a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .resource-item-name a:hover {
+      text-decoration: underline;
+      color: var(--accent);
+    }
+
+    .resource-item-detail {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    .resource-item-phone {
+      display: inline-block;
+      background: var(--primary);
+      color: #fff;
+      padding: 0.2rem 0.6rem;
+      border-radius: 1rem;
+      font-size: 0.78rem;
+      font-weight: 500;
+      margin-top: 0.25rem;
+      text-decoration: none;
+    }
+
+    .resource-item-phone:hover {
+      background: var(--primary-light);
+    }
+
+    .day-pill.resources-pill {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .day-pill.resources-pill:hover {
+      background: var(--accent-light);
+      border-color: var(--accent-light);
+    }
+
+    .day-pill.packing-pill {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .day-pill.packing-pill:hover {
+      background: var(--accent-light);
+      border-color: var(--accent-light);
+    }
+
+    /* Weather Bar */
+    .weather-bar {
+      background: linear-gradient(135deg, #e3f2fd 0%, #f1f5fe 100%);
+      border: 1px solid #b3d9ff;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.95rem;
+    }
+
+    .weather-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .weather-details {
+      flex: 1;
+      display: grid;
+      grid-template-columns: auto auto;
+      gap: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .weather-item {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .weather-label {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .weather-value {
+      color: var(--text-dim);
+    }
+
+    .stop-maps-link {
+      margin-top: 0.5rem;
+    }
+
+    /* Packing Section */
+    .packing-section {
+      display: none;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    .packing-section.active {
+      display: block;
+    }
+
+    .packing-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .packing-progress {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--card-border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+      transition: width 0.3s ease;
+    }
+
+    .packing-reset-btn {
+      background: var(--text-dim);
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .packing-reset-btn:hover {
+      background: var(--text);
+    }
+
+    .packing-group {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .packing-group-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: #fff;
+      padding: 0.75rem 1.25rem;
+      font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .packing-item {
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .packing-item:last-child {
+      border-bottom: none;
+    }
+
+    .packing-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .packing-item label {
+      cursor: pointer;
+      flex: 1;
+      font-size: 0.95rem;
+      user-select: none;
+    }
+
+    .packing-item input[type="checkbox"]:checked + label {
+      text-decoration: line-through;
+      color: var(--text-dim);
+    }
+
+    /* Packing Edit Mode Styles */
+    .packing-edit-btn {
+      background: transparent;
+      color: var(--primary);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-right: 0.5rem;
+    }
+
+    .packing-edit-btn:hover {
+      background: var(--card);
+    }
+
+    .packing-done-btn {
+      background: #4CAF50;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .packing-done-btn:hover {
+      background: #45a049;
+    }
+
+    .packing-section.packing-edit-mode {
+      background: linear-gradient(135deg, rgba(255, 200, 0, 0.08), rgba(255, 200, 0, 0.04));
+      padding: 1.5rem;
+      border-radius: 8px;
+    }
+
+    .packing-header-buttons {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .packing-add-input {
+      width: 100%;
+      padding: 0.625rem 0.875rem;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      background: var(--background);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin-top: 0.5rem;
+      min-height: 44px;
+    }
+
+    .packing-add-input::placeholder {
+      color: var(--text-dim);
+    }
+
+    .packing-add-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(45, 90, 61, 0.1);
+    }
+
+    .packing-item-input-row {
+      padding: 0.75rem 1.25rem;
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .packing-item-input-row input {
+      flex: 1;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      background: var(--background);
+      color: var(--text);
+      min-height: 44px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .packing-item-input-row input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(45, 90, 61, 0.1);
+    }
+
+    .packing-add-btn {
+      background: #4CAF50;
+      color: #fff;
+      border: none;
+      padding: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      font-size: 1.25rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .packing-add-btn:hover {
+      background: #45a049;
+    }
+
+    .packing-delete-btn {
+      background: #f44336;
+      color: #fff;
+      border: none;
+      padding: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      font-size: 1.25rem;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+
+    .packing-delete-btn:hover {
+      background: #da190b;
+    }
+
+    .packing-edit-mode .packing-delete-btn {
+      display: flex;
+    }
+
+    .packing-item-text {
+      flex: 1;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .packing-item-text.editing {
+      flex: 1;
+    }
+
+    .packing-item-text.editing input {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--primary);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      background: var(--background);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 44px;
+    }
+
+    .packing-item-text.editing input:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(45, 90, 61, 0.1);
+    }
+
+    .packing-add-category-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 1rem;
+      width: 100%;
+      min-height: 44px;
+      font-weight: 500;
+    }
+
+    .packing-add-category-btn:hover {
+      background: var(--primary-light);
+    }
+
+    .packing-reset-menu {
+      position: absolute;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
+      min-width: 200px;
+      overflow: hidden;
+    }
+
+    .packing-reset-menu-item {
+      padding: 0.75rem 1.25rem;
+      cursor: pointer;
+      border-bottom: 1px solid var(--card-border);
+      font-size: 0.9rem;
+      transition: background 0.2s;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+
+    .packing-reset-menu-item:last-child {
+      border-bottom: none;
+    }
+
+    .packing-reset-menu-item:hover {
+      background: var(--background);
+    }
+
+    .packing-reset-menu-item.danger {
+      color: #f44336;
+    }
+
+    @media (max-width: 600px) {
+      .packing-add-input {
+        font-size: 16px;
+      }
+
+      .packing-add-btn,
+      .packing-delete-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+      }
+    }
+
+    /* Gold accent underline on header */
+    header::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 3px;
+      background: var(--accent-light);
+      margin: 0.75rem auto 0;
+      border-radius: 2px;
+    }
+
+    /* Animations */
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .day-card {
+      animation: slideIn 0.3s ease;
+    }
+
+    /* #1: Back to Top Button */
+    .back-to-top {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(45, 90, 61, 0.35);
+      z-index: 90;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease;
+      pointer-events: none;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .back-to-top:hover {
+      background: var(--primary-light);
+    }
+
+    /* #3: Today Highlight */
+    .day-pill.today {
+      box-shadow: 0 0 0 2px var(--accent-light), 0 4px 12px rgba(192, 125, 62, 0.3);
+    }
+
+    .day-pill.today::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .day-pill {
+      position: relative;
+    }
+
+    .day-card.today-card {
+      box-shadow: 0 0 0 2px var(--accent), 0 4px 16px rgba(192, 125, 62, 0.2);
+    }
+
+    /* #4: Collapsible Flight Bar */
+    .flight-bar {
+      position: relative;
+      transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+      overflow: hidden;
+    }
+
+    .flight-bar.collapsed {
+      max-height: 0;
+      padding: 0 1.5rem;
+      border-bottom: none;
+      opacity: 0;
+    }
+
+    .flight-toggle {
+      position: absolute;
+      bottom: 0;
+      right: 0.75rem;
+      background: var(--bg);
+      border: 1px solid var(--card-border);
+      border-bottom: none;
+      border-radius: 6px 6px 0 0;
+      padding: 0.15rem 0.6rem;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      cursor: pointer;
+      z-index: 5;
+    }
+
+    .flight-bar-toggle {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: var(--card);
+      border: none;
+      border-bottom: 1px solid var(--card-border);
+      padding: 0.3rem;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .flight-bar-toggle:hover {
+      background: var(--bg);
+      color: var(--primary);
+    }
+
+    /* #5: Bigger Ticket Buttons */
+    .ticket-btn-large {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      margin-top: 0.5rem;
+      margin-left: 1.75rem;
+      padding: 0.6rem 1rem;
+      background: var(--tag-ticket);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      max-width: calc(100% - 1.75rem);
+    }
+
+    .ticket-btn-large:hover {
+      background: #2e5f7e;
+      box-shadow: 0 4px 12px rgba(58, 124, 165, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .ticket-btn-large:active {
+      transform: translateY(0);
+    }
+
+    /* #6: Timeline Connector */
+    .stop-list {
+      position: relative;
+    }
+
+    .stop {
+      position: relative;
+      z-index: 1;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -2px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      border: 2px solid var(--card);
+      z-index: 2;
+    }
+
+    .day-card.marathon .timeline-dot {
+      background: var(--marathon-red);
+    }
+
+    .stop-connector {
+      position: absolute;
+      left: 2px;
+      top: 0;
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--primary-light) 0%, var(--primary-light) 100%);
+      opacity: 0.3;
+      z-index: 0;
+    }
+
+    .day-card.marathon .stop-connector {
+      background: var(--marathon-red);
+    }
+
+    /* #8: Bigger Tap Targets for Day Card Headers */
+    .day-card-header {
+      min-height: 56px;
+      padding: 1.25rem 1.5rem;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0.05);
+      touch-action: manipulation;
+    }
+
+    /* #9: Last Updated Footer */
+    .app-footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      opacity: 0.7;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .app-footer .version-tag {
+      display: inline-block;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 1rem;
+      padding: 0.2rem 0.6rem;
+      margin-top: 0.25rem;
+    }
+
+    /* #10: Dark Mode */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1a1a1a;
+        --card: #2a2a2a;
+        --card-border: #3a3a3a;
+        --primary: #4a8c62;
+        --primary-light: #5fa87a;
+        --accent: #d4a253;
+        --accent-light: #e0b76a;
+        --text: #e8e4df;
+        --text-dim: #9a9488;
+        --tag-reservation: #d4a253;
+        --tag-ticket: #5a9cc5;
+        --marathon-red: #f09030;
+        --marathon-bg: #2e2518;
+        --transport-bg: #1e2a32;
+        --transport-border: #3a5a6a;
+      }
+
+      body {
+        background-color: var(--bg);
+        color: var(--text);
+      }
+
+      .day-pills {
+        background: rgba(26, 26, 26, 0.95);
+      }
+
+      .day-pill {
+        background: var(--card);
+        color: var(--text);
+        border-color: var(--card-border);
+      }
+
+      .stop {
+        background: #252525;
+      }
+
+      .stop:hover {
+        background: #303030;
+      }
+
+      .day-card.marathon .stop {
+        background: rgba(214, 85, 70, 0.08);
+      }
+
+      .day-card.marathon .stop:hover {
+        background: rgba(214, 85, 70, 0.12);
+      }
+
+      .flight-bar {
+        background: var(--card);
+      }
+
+      .flight-bar-toggle {
+        background: var(--card);
+        border-color: var(--card-border);
+        color: var(--text-dim);
+      }
+
+      .resource-item-name a {
+        color: var(--primary-light);
+      }
+
+      .resource-item-name a:hover {
+        color: var(--accent);
+      }
+
+      .back-to-top {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      }
+
+      .modal-content {
+        background: var(--card);
+      }
+
+      .modal-header {
+        border-color: var(--card-border);
+      }
+
+      img, iframe {
+        opacity: 0.9;
+      }
+
+      .stop-checklist-item {
+        border-bottom-color: rgba(255,255,255,0.05);
+      }
+
+      .weather-bar {
+        background: linear-gradient(135deg, #1a3a5a 0%, #1a2f42 100%);
+        border-color: #3a5a7a;
+      }
+
+      .weather-label {
+        color: var(--text);
+      }
+
+      .weather-value {
+        color: var(--text-dim);
+      }
+
+      .packing-reset-btn {
+        background: var(--text-dim);
+      }
+
+      .packing-reset-btn:hover {
+        background: var(--text);
+      }
+
+      .packing-add-input,
+      .packing-item-input-row input {
+        background: var(--card);
+        color: var(--text);
+        border-color: var(--card-border);
+      }
+
+      .packing-add-input::placeholder {
+        color: var(--text-dim);
+      }
+
+      .packing-add-input:focus,
+      .packing-item-input-row input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(90, 156, 197, 0.1);
+      }
+
+      .packing-item-text.editing input {
+        background: var(--card);
+        color: var(--text);
+        border-color: var(--primary);
+      }
+
+      .packing-item-text.editing input:focus {
+        box-shadow: 0 0 0 3px rgba(90, 156, 197, 0.1);
+      }
+
+      .packing-section.packing-edit-mode {
+        background: linear-gradient(135deg, rgba(100, 100, 50, 0.1), rgba(100, 100, 50, 0.05));
+      }
+
+      .packing-reset-menu {
+        background: var(--card);
+        border-color: var(--card-border);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      }
+
+      .packing-reset-menu-item {
+        border-bottom-color: var(--card-border);
+        color: var(--text);
+      }
+
+      .packing-reset-menu-item:hover {
+        background: #303030;
+      }
+
+      .packing-edit-btn {
+        color: var(--primary);
+      }
+
+      .packing-edit-btn:hover {
+        background: var(--card);
+      }
+    }
+
+    /* Print Styles */
+    @media print {
+      .day-pills, .back-to-top, .flight-bar-toggle, .app-footer {
+        display: none;
+      }
+
+      .day-content {
+        max-height: none;
+      }
+
+      .day-card {
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>London 2026 <span class="flag">🇬🇧</span></h1>
+    <p class="subtitle">April 21-28 · Marathon Trip</p>
+  </header>
+
+  <div class="flight-bar" id="flightBar">
+    <div class="flight-info">
+      <strong>Outbound:</strong>
+      <span class="route">DL0020 SEA→LHR</span>
+    </div>
+    <div class="flight-info">
+      <strong>Return:</strong>
+      <span class="route">DL0021 LHR→SEA</span>
+    </div>
+  </div>
+  <button class="flight-bar-toggle" id="flightToggle">✈️ Flight Info</button>
+
+  <div class="day-pills" id="dayPills">
+    <button class="day-pill active" data-day="21">Mon 21</button>
+    <button class="day-pill" data-day="22">Tue 22</button>
+    <button class="day-pill" data-day="23">Wed 23</button>
+    <button class="day-pill" data-day="24">Thu 24</button>
+    <button class="day-pill" data-day="25">Fri 25</button>
+    <button class="day-pill marathon" data-day="26">Sun 26 🏅</button>
+    <button class="day-pill" data-day="27">Mon 27</button>
+    <button class="day-pill" data-day="28">Tue 28</button>
+    <button class="day-pill resources-pill" data-view="resources">Resources</button>
+    <button class="day-pill packing-pill" data-view="packing">🧳 Packing</button>
+  </div>
+
+  <main id="dayCards"></main>
+
+  <section class="resources-section" id="resourcesSection">
+    <!-- Emergency & Medical -->
+    <div class="resource-group">
+      <div class="resource-group-header">🚨 Emergency & Medical</div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🆘</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name">UK Emergency Services</div>
+          <div class="resource-item-detail">Police, Fire, Ambulance</div>
+          <a href="tel:999" class="resource-item-phone">999</a>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🏥</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name">NHS Non-Emergency</div>
+          <div class="resource-item-detail">Medical advice, minor injuries, pharmacy info</div>
+          <a href="tel:111" class="resource-item-phone">111</a>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🏛</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://uk.usembassy.gov" target="_blank">U.S. Embassy London</a></div>
+          <div class="resource-item-detail">33 Nine Elms Lane, SW11 7US — Passport, emergency citizen services</div>
+          <a href="tel:+442074999000" class="resource-item-phone">+44 20 7499 9000</a>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">💊</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://www.boots.com/store-finder" target="_blank">Boots Pharmacy Finder</a></div>
+          <div class="resource-item-detail">UK's largest pharmacy chain — many open late and on weekends</div>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🩺</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://www.nhs.uk/service-search/find-a-walk-in-centre" target="_blank">NHS Walk-In Centres</a></div>
+          <div class="resource-item-detail">No appointment needed — for minor injuries and illnesses</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transportation -->
+    <div class="resource-group">
+      <div class="resource-group-header">🚕 Transportation</div>
+      <div class="resource-item">
+        <span class="resource-item-icon">📱</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://www.uber.com/gb/en/" target="_blank">Uber UK</a></div>
+          <div class="resource-item-detail">Ride-hailing — widely available across London</div>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">⚡</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://bolt.eu/en-gb/" target="_blank">Bolt</a></div>
+          <div class="resource-item-detail">Budget-friendly alternative to Uber — often cheaper fares</div>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🚖</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://www.free-now.com/uk/" target="_blank">FREE NOW</a></div>
+          <div class="resource-item-detail">Book London's iconic black cabs via app — also private hire</div>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🚇</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://tfl.gov.uk" target="_blank">Transport for London (TfL)</a></div>
+          <div class="resource-item-detail">Tube map, bus routes, service status — use contactless to pay</div>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🗺</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://citymapper.com/london" target="_blank">Citymapper London</a></div>
+          <div class="resource-item-detail">Best public transit app for London — real-time routes and disruptions</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Marathon -->
+    <div class="resource-group">
+      <div class="resource-group-header">🏅 London Marathon</div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🏃</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://www.tcslondonmarathon.com" target="_blank">TCS London Marathon</a></div>
+          <div class="resource-item-detail">Official site — start times, route map, spectator guide, results</div>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">📍</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://www.tcslondonmarathon.com/the-event/spectator-guide" target="_blank">Spectator Guide</a></div>
+          <div class="resource-item-detail">Best viewing spots, cheering points, and how to track runners</div>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">📦</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://www.tcslondonmarathon.com/the-event/marathon-expo" target="_blank">Marathon Expo</a></div>
+          <div class="resource-item-detail">ExCeL London — bib pickup, merchandise, and race prep</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Attractions & Venues -->
+    <div class="resource-group">
+      <div class="resource-group-header">🏰 Attractions & Venues</div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🗼</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://www.hrp.org.uk/tower-of-london/" target="_blank">Tower of London</a></div>
+          <div class="resource-item-detail">Apr 22 · Tickets in app</div>
+          <a href="tel:+443333206000" class="resource-item-phone">+44 333 320 6000</a>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">⛪</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://www.westminster-abbey.org" target="_blank">Westminster Abbey</a></div>
+          <div class="resource-item-detail">Apr 23 · Tickets in app</div>
+          <a href="tel:+442072225152" class="resource-item-phone">+44 20 7222 5152</a>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🏛</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://www.britishmuseum.org" target="_blank">British Museum</a></div>
+          <div class="resource-item-detail">Apr 24 · Tickets in app · Free entry, timed slots</div>
+          <a href="tel:+442073238000" class="resource-item-phone">+44 20 7323 8000</a>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🎖</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://www.iwm.org.uk/visits/churchill-war-rooms" target="_blank">Churchill War Rooms</a></div>
+          <div class="resource-item-detail">Apr 25 · Tickets TBD</div>
+          <a href="tel:+442074165000" class="resource-item-phone">+44 20 7416 5000</a>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">👑</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://www.rct.uk/visit/buckingham-palace" target="_blank">Buckingham Palace</a></div>
+          <div class="resource-item-detail">Changing of the Guard, photo op at the gates</div>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🎡</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://www.londoneye.com" target="_blank">London Eye</a></div>
+          <div class="resource-item-detail">South Bank — book ahead or walk up (expect queues)</div>
+          <a href="tel:+448712228881" class="resource-item-phone">+44 871 222 8881</a>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🌉</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://www.towerbridge.org.uk" target="_blank">Tower Bridge</a></div>
+          <div class="resource-item-detail">Exhibition & Glass Floor walkway — check lift times</div>
+          <a href="tel:+442074033761" class="resource-item-phone">+44 20 7403 3761</a>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🎭</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://www.shakespearesglobe.com" target="_blank">Shakespeare's Globe</a></div>
+          <div class="resource-item-detail">Tours, exhibitions, and performances on the South Bank</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Food & Dining -->
+    <div class="resource-group">
+      <div class="resource-group-header">🍽 Food & Dining</div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🍔</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://bleeckerburger.co.uk" target="_blank">Bleecker Burger</a></div>
+          <div class="resource-item-detail">Multiple locations — known for their wagyu beef burgers</div>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🍔</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://www.honestburgers.co.uk" target="_blank">Honest Burgers</a></div>
+          <div class="resource-item-detail">British beef burgers — rosemary salted chips are a must</div>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🍺</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://www.beerintheevening.com/pubs/s/25/2590/Ye_Olde_Cheshire_Cheese/Fleet_Street" target="_blank">Ye Olde Cheshire Cheese</a></div>
+          <div class="resource-item-detail">Historic pub (rebuilt 1667) — Fleet Street, cozy cellar bars</div>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🥘</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://www.boroughmarket.org.uk" target="_blank">Borough Market</a></div>
+          <div class="resource-item-detail">London's oldest food market — open Wed-Sat, best visited mornings</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shopping & Bookshops -->
+    <div class="resource-group">
+      <div class="resource-group-header">📚 Shopping & Bookshops</div>
+      <div class="resource-item">
+        <span class="resource-item-icon">📖</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://www.forbiddenplanet.com" target="_blank">Forbidden Planet</a></div>
+          <div class="resource-item-detail">Shaftesbury Ave — comics, manga, sci-fi, collectibles</div>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">📚</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://www.waterstones.com/bookshops/piccadilly" target="_blank">Waterstones Piccadilly</a></div>
+          <div class="resource-item-detail">Europe's largest bookshop — 6 floors, cafe on top</div>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🛍</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://www.cecilcourt.co.uk" target="_blank">Cecil Court</a></div>
+          <div class="resource-item-detail">Charming pedestrian alley of antiquarian bookshops near Leicester Square</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Useful Numbers & Info -->
+    <div class="resource-group">
+      <div class="resource-group-header">📞 Useful Info</div>
+      <div class="resource-item">
+        <span class="resource-item-icon">📱</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name">UK Country Code</div>
+          <div class="resource-item-detail">+44 (drop the leading 0 from local numbers)</div>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">💳</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name">Contactless Payment</div>
+          <div class="resource-item-detail">Apple Pay / Google Pay / contactless cards accepted almost everywhere, including Tube</div>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🔌</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name">Power Outlets</div>
+          <div class="resource-item-detail">UK uses Type G plugs (3-prong) — bring a US-to-UK adapter</div>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">💱</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name">Currency</div>
+          <div class="resource-item-detail">British Pound Sterling (GBP / £) — ATMs widely available, avoid currency exchange kiosks</div>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🕐</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name">Time Zone</div>
+          <div class="resource-item-detail">BST (British Summer Time) = UTC+1 — 8 hours ahead of Seattle (PDT)</div>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">📶</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name">WiFi & Data</div>
+          <div class="resource-item-detail">Free WiFi at most cafes, hotels, museums — check your carrier's international plan</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Family Contacts -->
+    <div class="resource-group">
+      <div class="resource-group-header">👨‍👩‍👦‍👦 Family Contacts</div>
+      <div class="resource-item">
+        <span class="resource-item-icon">👫</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name">David & Paula</div>
+          <div class="resource-item-detail">bridsp@gmail.com · 1davidhensley@gmail.com</div>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">👫</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name">James & Stef</div>
+          <div class="resource-item-detail">hensley.james@gmail.com</div>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🏨</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://maps.google.com/?q=hub+by+Premier+Inn+London+Soho" target="_blank">Hub Premier Inn, Soho</a></div>
+          <div class="resource-item-detail">Shared hotel Apr 25–30 — everyone in London together</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Packing Section -->
+  <section class="packing-section" id="packingSection">
+    <div class="packing-header">
+      <h2>🧳 Packing Checklist</h2>
+      <div class="packing-progress">
+        <span id="packingProgress">0 of 0</span> packed
+      </div>
+      <div class="progress-bar">
+        <div class="progress-bar-fill" id="packingProgressBar" style="width: 0%"></div>
+      </div>
+      <div class="packing-header-buttons">
+        <button class="packing-edit-btn" id="packingEditBtn" onclick="togglePackingEditMode()">✏️ Edit List</button>
+        <div style="position: relative;">
+          <button class="packing-reset-btn" id="packingResetBtn" onclick="toggleResetMenu()">Reset</button>
+          <div class="packing-reset-menu" id="resetMenu" style="display: none;">
+            <div class="packing-reset-menu-item" onclick="resetPackingCheckboxes(); toggleResetMenu();">Reset checkboxes</div>
+            <div class="packing-reset-menu-item danger" onclick="resetPackingToDefaults(); toggleResetMenu();">Reset to original list</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Packing groups container - will be rendered by JavaScript -->
+    <div class="packing-groups-container"></div>
+  </section>
+
+  <div class="modal" id="ticketModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="ticketTitle">Ticket</h2>
+        <button class="modal-close" id="modalClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <iframe id="ticketIframe" src="" title="Ticket PDF"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back to Top Button -->
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+
+  <!-- Footer -->
+  <footer class="app-footer" id="appFooter">
+    London 2026 Trip Guide · David & Paula<br>
+    <span class="version-tag">Last updated: March 29, 2026</span>
+  </footer>
+
+  <script>
+    // Day Data
+    const dayData = [
+      {
+        number: 21,
+        date: 'Tuesday, April 21',
+        theme: '✈️ Arrival Day',
+        weather: {
+          temp: '15°C / 59°F',
+          icon: '⛅',
+          desc: 'Partly cloudy',
+          rain: '35% rain'
+        },
+        stops: [
+          {
+            time: '3:30 pm',
+            emoji: '✈️',
+            name: 'Land at Heathrow',
+            details: 'Customs, unload'
+          },
+          {
+            time: '4:30 pm',
+            emoji: '🚗',
+            name: 'Transfer to Hotel',
+            details: 'Car arranged by Hotel Café Royal'
+          },
+          {
+            time: '5:30 pm',
+            emoji: '🏨',
+            name: 'Check in — Hotel Café Royal',
+            details: '',
+            link: 'https://www.hotelcaferoyal.com',
+            walkTo: 'Walk 10 min to Leicester Square',
+            mapsQuery: 'Leicester Square, London, UK'
+          },
+          {
+            time: '6:30 pm',
+            emoji: '🧱',
+            name: 'LEGO Store — Leicester Square',
+            details: '',
+            link: 'https://www.lego.com/en-gb/stores/store/london-leicester-square',
+            walkTo: 'Walk 5 min to dinner',
+            mapsQuery: 'Bleecker Burger, London, UK'
+          },
+          {
+            time: '7:00 pm',
+            emoji: '🍔',
+            name: 'Dinner — TBD',
+            details: 'Bleeker Burger or Honest Burger',
+            mapsQuery: 'Bleecker Burger London'
+          }
+        ],
+        transport: []
+      },
+      {
+        number: 22,
+        date: 'Wednesday, April 22',
+        theme: '🏰 Tower + City + Soho',
+        weather: {
+          temp: '15°C / 59°F',
+          icon: '⛅',
+          desc: 'Partly cloudy',
+          rain: '35% rain'
+        },
+        stops: [
+          {
+            time: '7:30 am',
+            emoji: '🍳',
+            name: 'Breakfast — Hotel Café Royal',
+            link: 'https://www.hotelcaferoyal.com',
+            details: '',
+            mapsQuery: 'Hotel Cafe Royal London'
+          },
+          {
+            time: '8:15 am',
+            emoji: '🚇',
+            name: 'Travel to Tower of London',
+            details: '',
+            transportDir: {
+              name: '8:15 am — Hotel → Tower of London',
+              steps: [
+                { icon: 'Board', text: 'Board at Piccadilly Circus — Bakerloo line (southbound)' },
+                { icon: 'Ride', text: 'Ride Bakerloo line — 2 stops' },
+                { icon: 'Exit', text: 'Exit at Embankment' },
+                { icon: 'Transfer', text: 'Transfer to District line (eastbound)' },
+                { icon: 'Ride', text: 'Ride District line — 6 stops' },
+                { icon: 'Exit', text: 'Exit at Tower Hill' }
+              ],
+              time: '~30 min · 🚕 Cab alternative: ~25 min'
+            }
+          },
+          {
+            time: '9:00 am',
+            emoji: '🏰',
+            name: 'Tower of London',
+            link: 'https://www.hrp.org.uk/tower-of-london/',
+            checklist: [
+              '9am entry · Plan 3 hours',
+              'Crown Jewels (arrive early, shortest line)',
+              'Yeoman Warder tour — from Bell Tower at 10am (every 45 min)',
+              'White Tower — armour and weapons',
+              'Medieval Palace',
+              'Ravens',
+              'Execution site — Tower Green'
+            ],
+            tickets: {
+              name: 'Tower of London',
+              pdf: 'tickets/tower-of-london.pdf'
+            },
+            walkTo: 'Walk 10 min to Tower Bridge',
+            mapsQuery: 'Tower Bridge, London, UK'
+          },
+          {
+            time: '12:00 pm',
+            emoji: '🌉',
+            name: 'Tower Bridge',
+            link: 'https://www.towerbridge.org.uk',
+            details: 'Walk across the bridge · Great photo ops',
+            walkTo: 'Walk 15 min to Leadenhall Market',
+            mapsQuery: 'Leadenhall Market, London, UK'
+          },
+          {
+            time: '12:45 pm',
+            emoji: '🏛',
+            name: 'Leadenhall Market',
+            link: 'https://www.leadenhallmarket.co.uk',
+            details: 'Painted ceiling · Bull\'s Head Passage (Diagon Alley!) · Stand center for best photo',
+            walkTo: 'Walk 10 min to Bank Station for DLR',
+            mapsQuery: 'Bank Station, London, UK'
+          },
+          {
+            time: '1:00 pm',
+            emoji: '🚇',
+            name: 'Travel to Canary Wharf',
+            details: '',
+            transportDir: {
+              name: '1:00 pm — Leadenhall → Canary Wharf',
+              steps: [
+                { icon: 'Board', text: 'Board DLR at Bank Station (toward Lewisham)' },
+                { icon: 'Ride', text: 'Ride DLR — 4 stops' },
+                { icon: 'Exit', text: 'Exit at Canary Wharf' }
+              ],
+              time: '~20 min'
+            }
+          },
+          {
+            time: '1:30 pm',
+            emoji: '🍽',
+            name: 'Lunch — Gallio, Canary Wharf',
+            details: '',
+            mapsQuery: 'Gallio Canary Wharf London'
+          },
+          {
+            time: '2:30 pm',
+            emoji: '🚇',
+            name: 'Travel to Expo',
+            details: '',
+            transportDir: {
+              name: '2:30 pm — Canary Wharf → Marathon Expo',
+              steps: [
+                { icon: 'Board', text: 'Board at Canary Wharf — Elizabeth line (toward Abbey Wood)' },
+                { icon: 'Ride', text: 'Ride Elizabeth line — non-stop' },
+                { icon: 'Exit', text: 'Exit at Custom House' }
+              ],
+              time: '~20 min'
+            }
+          },
+          {
+            time: '3:00 pm',
+            emoji: '🏃',
+            name: 'Marathon Expo',
+            details: 'Pick up race packet!',
+            link: 'https://www.tcslondonmarathon.com/the-event/marathon-expo'
+          },
+          {
+            time: '4:00 pm',
+            emoji: '🚇',
+            name: 'Back to Hotel',
+            details: '',
+            transportDir: {
+              name: '4:00 pm — Expo → Hotel',
+              steps: [
+                { icon: 'Board', text: 'Board at Custom House — Elizabeth line (toward Heathrow T4)' },
+                { icon: 'Ride', text: 'Ride Elizabeth line — 5 stops' },
+                { icon: 'Exit', text: 'Exit at Tottenham Court Road' },
+                { icon: 'Walk', text: 'Walk to Hotel Café Royal' }
+              ],
+              time: '~50 min'
+            }
+          },
+          {
+            time: '5:00 pm',
+            emoji: '🏨',
+            name: 'Hotel — Relax',
+            details: ''
+          },
+          {
+            time: '6:00 pm',
+            emoji: '🛍',
+            name: 'Carnaby Street',
+            link: 'https://www.carnaby.co.uk',
+            details: 'Kingly Court · overhead decorations!',
+            walkTo: 'Walk 5 min to Brasserie Zedel',
+            mapsQuery: 'Brasserie Zedel, London, UK'
+          },
+          {
+            time: '6:30 pm',
+            emoji: '🍽',
+            name: 'Dinner — Brasserie Zedel',
+            link: 'https://www.brasseriezedel.com',
+            details: 'Parisian brasserie in Soho',
+            reservation: {
+              bookedBy: 'Paula',
+              partySize: 2
+            }
+          },
+          {
+            time: '8:00 pm',
+            emoji: '🏨',
+            name: 'Back to Hotel',
+            details: ''
+          }
+        ],
+        transport: []
+      },
+      {
+        number: 23,
+        date: 'Thursday, April 23',
+        theme: '🏛 Westminster + South Bank',
+        weather: {
+          temp: '15°C / 59°F',
+          icon: '⛅',
+          desc: 'Partly cloudy',
+          rain: '35% rain'
+        },
+        stops: [
+          {
+            time: '8:00 am',
+            emoji: '🍳',
+            name: 'Breakfast — Hotel Café Royal',
+            details: '',
+            mapsQuery: 'Hotel Cafe Royal London'
+          },
+          {
+            time: '9:00 am',
+            emoji: '🚌',
+            name: 'Travel to Westminster Abbey',
+            details: '',
+            transportDir: {
+              name: '9:00 am — Hotel → Westminster Abbey',
+              steps: [
+                { icon: 'Board', text: 'Board Bus 88 at Piccadilly Circus Stop F' },
+                { icon: 'Ride', text: 'Ride Bus 88 — 6 stops' },
+                { icon: 'Exit', text: 'Exit at Westminster Abbey Stop X' }
+              ],
+              time: '~15 min'
+            }
+          },
+          {
+            time: '9:30 am',
+            emoji: '⛪',
+            name: 'Westminster Abbey',
+            link: 'https://www.westminster-abbey.org',
+            checklist: [
+              '9:30am entry · Plan 2 hours',
+              'Coronation Chair',
+              'Poets\' Corner',
+              'Lady Chapel',
+              'Royal Tombs',
+              'Cloisters'
+            ],
+            tickets: {
+              name: 'Westminster Abbey',
+              pdf: 'tickets/westminster-abbey.pdf'
+            },
+            walkTo: 'Walk 5 min to Parliament Square',
+            mapsQuery: 'Parliament Square, London, UK'
+          },
+          {
+            time: '11:30 am',
+            emoji: '🏛',
+            name: 'Parliament, Big Ben & London Eye',
+            details: 'Best photos: mid-bridge and south bank landing (down steps toward river path)',
+            walkTo: 'Walk across Westminster Bridge to South Bank · 10 min',
+            mapsQuery: 'South Bank, London, UK'
+          },
+          {
+            time: '12:30 pm',
+            emoji: '🐟',
+            name: 'Lunch — Fishcoteque',
+            link: 'https://www.fishcotheque.com',
+            details: 'Fish and chips!',
+            mapsQuery: 'Fishcoteque London',
+            walkTo: 'Walk 15 min through St. James\'s Park',
+            walkMapsQuery: 'St James\'s Park, London, UK'
+          },
+          {
+            time: '2:00 pm',
+            emoji: '🦢',
+            name: 'St. James\'s Park',
+            details: 'Walk through the park, not around · Blue bridge · Pelicans?!',
+            walkTo: 'Walk through the park to Buckingham Palace · 10 min',
+            mapsQuery: 'Buckingham Palace, London, UK'
+          },
+          {
+            time: '2:30 pm',
+            emoji: '👑',
+            name: 'Buckingham Palace',
+            link: 'https://www.rct.uk/visit/buckingham-palace',
+            details: 'Victoria Memorial · the Mall',
+            walkTo: 'Walk up the Mall to Trafalgar Square · 15 min',
+            mapsQuery: 'Trafalgar Square, London, UK'
+          },
+          {
+            time: '3:00 pm',
+            emoji: '🦁',
+            name: 'Trafalgar Square + National Gallery',
+            link: 'https://www.nationalgallery.org.uk',
+            details: 'Sunflowers (Van Gogh) · Waterlily Pond (Monet)',
+            walkTo: 'Walk 10 min back to Hotel Café Royal',
+            mapsQuery: 'Hotel Cafe Royal, London, UK'
+          },
+          {
+            time: '4:00 pm',
+            emoji: '🏨',
+            name: 'Hotel — Relax',
+            details: ''
+          },
+          {
+            time: '6:00 pm',
+            emoji: '🍽',
+            name: 'Dinner — Fallow',
+            link: 'https://fallowrestaurant.com',
+            details: '',
+            mapsQuery: 'Fallow Restaurant London',
+            reservation: {
+              bookedBy: 'David',
+              partySize: 2
+            }
+          }
+        ],
+        transport: []
+      },
+      {
+        number: 24,
+        date: 'Friday, April 24',
+        theme: '📚 Museum + Covent Garden',
+        weather: {
+          temp: '15°C / 59°F',
+          icon: '⛅',
+          desc: 'Partly cloudy',
+          rain: '35% rain'
+        },
+        stops: [
+          {
+            time: '8:00 am',
+            emoji: '🍳',
+            name: 'Breakfast — Hotel Café Royal',
+            details: '',
+            mapsQuery: 'Hotel Cafe Royal London'
+          },
+          {
+            time: '9:00 am',
+            emoji: '📖',
+            name: 'Foyles Bookstore',
+            link: 'https://www.foyles.co.uk',
+            details: '',
+            walkTo: 'Walk 10 min to the British Museum',
+            mapsQuery: 'British Museum, London, UK'
+          },
+          {
+            time: '10:00 am',
+            emoji: '🏺',
+            name: 'The British Museum',
+            link: 'https://www.britishmuseum.org',
+            checklist: [
+              '10am entry · Plan 3 hours',
+              'Rosetta Stone (Room 4)',
+              'Egyptian galleries',
+              'Lion hunt reliefs (Room 10)',
+              'Parthenon sculptures (Room 18)',
+              'Hoa Hakananai\'a — Easter Island statue (Room 24)',
+              'Aztec Double-Headed Serpent (Room 27)',
+              'Great Court',
+              'Lewis Chessmen (Room 40)',
+              'Sutton Hoo ship burial (Room 41)',
+              'Astrolabe collection (Room 42)',
+              'Oxus Treasure (Room 52)'
+            ],
+            tickets: {
+              name: 'The British Museum',
+              pdf: 'tickets/british-museum.pdf'
+            },
+            walkTo: 'Walk 10 min south to Seven Dials Market',
+            mapsQuery: 'Seven Dials Market, London, UK'
+          },
+          {
+            time: '1:00 pm',
+            emoji: '🌮',
+            name: 'Lunch — Seven Dials Market',
+            link: 'https://sevendialsmarket.com',
+            details: 'Tacos, hot chicken, pizza, bagels, pasta, hot dogs',
+            mapsQuery: 'Seven Dials Market London',
+            walkTo: 'Walk 2 min to Neal\'s Yard',
+            walkMapsQuery: 'Neal\'s Yard, London, UK'
+          },
+          {
+            time: '2:00 pm',
+            emoji: '🛍',
+            name: 'Seven Dials + Neal\'s Yard',
+            details: 'Cute shops · Neal\'s Yard is colorful and very photogenic',
+            walkTo: 'Walk 5 min to Forbidden Planet',
+            mapsQuery: 'Forbidden Planet, London, UK'
+          },
+          {
+            time: '2:30 pm',
+            emoji: '🎮',
+            name: 'Forbidden Planet',
+            link: 'https://www.forbiddenplanet.com',
+            details: 'Pokémon, Funko, comics',
+            walkTo: 'Walk 10 min to Cecil Court',
+            mapsQuery: 'Cecil Court, London, UK'
+          },
+          {
+            time: '3:00 pm',
+            emoji: '📚',
+            name: 'Cecil Court',
+            link: 'https://www.cecilcourt.co.uk',
+            details: 'Books!',
+            walkTo: 'Walk 10 min back to Hotel Café Royal',
+            mapsQuery: 'Hotel Cafe Royal, London, UK'
+          },
+          {
+            time: '4:00 pm',
+            emoji: '🏨',
+            name: 'Hotel — Relax',
+            details: ''
+          },
+          {
+            time: '5:15 pm',
+            emoji: '🚇',
+            name: 'Travel to Covent Garden',
+            details: '',
+            transportDir: {
+              name: '5:15 pm — Hotel → Covent Garden',
+              steps: [
+                { icon: 'Board', text: 'Board at Piccadilly Circus — Piccadilly line (toward Arnos Grove)' },
+                { icon: 'Ride', text: 'Ride Piccadilly line — 2 stops' },
+                { icon: 'Exit', text: 'Exit at Covent Garden' }
+              ],
+              time: '~10 min'
+            }
+          },
+          {
+            time: '5:30 pm',
+            emoji: '🎪',
+            name: 'Covent Garden',
+            link: 'https://www.coventgarden.london',
+            details: '',
+            walkTo: 'Walk 5 min to The Harp',
+            mapsQuery: 'The Harp Pub, Chandos Place, London, UK'
+          },
+          {
+            time: '6:00 pm',
+            emoji: '🍺',
+            name: 'The Harp',
+            link: 'https://www.harpcoventgarden.com',
+            details: 'Quick pint before dinner',
+            walkTo: 'Walk 2 min to The Lamb & Flag',
+            mapsQuery: 'Lamb and Flag, Rose Street, London, UK'
+          },
+          {
+            time: '6:30 pm',
+            emoji: '🍽',
+            name: 'Dinner — The Lamb & Flag',
+            link: 'https://www.lambflagcoventgarden.co.uk',
+            details: '',
+            mapsQuery: 'The Lamb and Flag Covent Garden London'
+          }
+        ],
+        transport: []
+      },
+      {
+        number: 25,
+        date: 'Saturday, April 25',
+        theme: '🪖 Churchill + Soho + Marylebone',
+        weather: {
+          temp: '15°C / 59°F',
+          icon: '⛅',
+          desc: 'Partly cloudy',
+          rain: '35% rain'
+        },
+        stops: [
+          {
+            time: '7:45 am',
+            emoji: '🍳',
+            name: 'Breakfast — Hotel Café Royal',
+            details: '',
+            mapsQuery: 'Hotel Cafe Royal London'
+          },
+          {
+            time: '8:30 am',
+            emoji: '🚌',
+            name: 'Travel to Churchill War Rooms',
+            details: '',
+            transportDir: {
+              name: '8:30 am — Hotel → Churchill War Rooms',
+              steps: [
+                { icon: 'Board', text: 'Board Bus 12 at Piccadilly Circus Stop F' },
+                { icon: 'Ride', text: 'Ride Bus 12 — 5 stops' },
+                { icon: 'Exit', text: 'Exit at Westminster / Parliament Square Stop G' }
+              ],
+              time: '~15 min'
+            }
+          },
+          {
+            time: '9:00 am',
+            emoji: '🪖',
+            name: 'Churchill War Rooms',
+            link: 'https://www.iwm.org.uk/visits/churchill-war-rooms',
+            checklist: [
+              'Map Room',
+              'Cabinet War Room',
+              'Churchill\'s bedroom',
+              'Bunker life exhibits',
+              'Churchill Museum — interactive timeline',
+              'Speeches and personal artifacts'
+            ]
+          },
+          {
+            time: '11:15 am',
+            emoji: '🚌',
+            name: 'Travel to Forty Dean Street',
+            details: '',
+            transportDir: {
+              name: '11:15 am — Churchill → Forty Dean Street',
+              steps: [
+                { icon: 'Board', text: 'Board Bus 24 at Westminster / Parliament Square Stop G' },
+                { icon: 'Ride', text: 'Ride Bus 24 — 5 stops' },
+                { icon: 'Exit', text: 'Exit at Denmark Street Stop A' }
+              ],
+              time: '~25 min'
+            }
+          },
+          {
+            time: '12:00 pm',
+            emoji: '🍽',
+            name: 'Lunch — Forty Dean Street',
+            link: 'https://www.fortydeanst.com',
+            details: 'MJFF Charity lunch',
+            mapsQuery: 'Forty Dean Street Soho London'
+          },
+          {
+            time: '1:30 pm',
+            emoji: '🚇',
+            name: 'Travel to Marylebone',
+            details: '',
+            transportDir: {
+              name: '1:30 pm — Forty Dean Street → Marylebone',
+              steps: [
+                { icon: 'Board', text: 'Board at Tottenham Court Road — Elizabeth line (toward Maidenhead)' },
+                { icon: 'Ride', text: 'Ride Elizabeth line — non-stop' },
+                { icon: 'Exit', text: 'Exit at Bond Street' },
+                { icon: 'Walk', text: 'Walk north to Marylebone High Street' }
+              ],
+              time: '~15 min'
+            }
+          },
+          {
+            time: '2:00 pm',
+            emoji: '🛍',
+            name: 'Marylebone High Street',
+            details: 'Wander boutiques and shops',
+            walkTo: 'Walk 5 min to Daunt Books',
+            mapsQuery: 'Daunt Books, Marylebone, London, UK'
+          },
+          {
+            time: '3:00 pm',
+            emoji: '📚',
+            name: 'Daunt Books',
+            link: 'https://www.dauntbooks.co.uk',
+            details: 'Go all the way to the back for the skylights!',
+            walkTo: 'Walk 5 min to Baker Street Station',
+            mapsQuery: 'Baker Street Station, London, UK'
+          },
+          {
+            time: '4:00 pm',
+            emoji: '🚇',
+            name: 'Back to Hotel',
+            details: '',
+            transportDir: {
+              name: '4:00 pm — Marylebone → Hotel',
+              steps: [
+                { icon: 'Board', text: 'Board at Baker Street — Bakerloo line (toward Elephant & Castle)' },
+                { icon: 'Ride', text: 'Ride Bakerloo line — 3 stops' },
+                { icon: 'Exit', text: 'Exit at Piccadilly Circus' },
+                { icon: 'Walk', text: 'Walk to Hotel Café Royal' }
+              ],
+              time: '~20 min'
+            }
+          },
+          {
+            time: '4:30 pm',
+            emoji: '🏨',
+            name: 'Hotel — Relax',
+            details: ''
+          },
+          {
+            time: '6:00 pm',
+            emoji: '🍺',
+            name: 'Broad Street Pump + John Snow Bar',
+            link: 'https://en.wikipedia.org/wiki/Broad_Street_cholera_outbreak',
+            details: '',
+            walkTo: 'Walk 5 min to Rudy\'s Pizza',
+            mapsQuery: 'Rudy\'s Pizza Soho, London, UK'
+          },
+          {
+            time: '6:45 pm',
+            emoji: '🍕',
+            name: 'Dinner — Rudy\'s Pizza Napoletana',
+            link: 'https://rudyspizza.co.uk',
+            details: '',
+            mapsQuery: 'Rudy\'s Pizza Napoletana Soho London',
+            reservation: {
+              bookedBy: 'James',
+              partySize: 6
+            }
+          }
+        ],
+        transport: []
+      },
+      {
+        number: 26,
+        date: 'Sunday, April 26',
+        theme: '🏅 MARATHON DAY! · Team Fox / MJFF',
+        isMarathon: true,
+        weather: {
+          temp: '15°C / 59°F',
+          icon: '⛅',
+          desc: 'Partly cloudy',
+          rain: '35% rain — Marathon weather: check morning forecast'
+        },
+        stops: [
+          {
+            time: '—',
+            emoji: '🦊',
+            name: 'Running for Michael J. Fox Foundation',
+            details: 'Team Fox — Fighting Parkinson\'s Disease',
+            link: 'https://give.michaeljfox.org/event/2026-tcs-london-marathon/e656578'
+          },
+          {
+            time: '—',
+            emoji: '📍',
+            name: 'Viewing Spots',
+            details: 'Tower Bridge (Mile 12/13) · Victoria Embankment (Mile 24/25)'
+          },
+          {
+            time: '4:45 pm',
+            emoji: '🎂',
+            name: 'Cakes and Bubbles — Hotel Café Royal',
+            link: 'https://www.hotelcaferoyal.com/dining/cakes-and-bubbles',
+            details: '',
+            reservation: {
+              bookedBy: 'David',
+              partySize: 6
+            }
+          },
+          {
+            time: '6:15 pm',
+            emoji: '🍸',
+            name: 'Green Bar — Hotel Café Royal',
+            link: 'https://www.hotelcaferoyal.com/dining/green-bar',
+            details: '',
+            reservation: {
+              bookedBy: 'David',
+              partySize: 6
+            }
+          }
+        ],
+        transport: []
+      },
+      {
+        number: 27,
+        date: 'Monday, April 27',
+        theme: '💆 Kensington + Central',
+        weather: {
+          temp: '15°C / 59°F',
+          icon: '⛅',
+          desc: 'Partly cloudy',
+          rain: '35% rain'
+        },
+        stops: [
+          {
+            time: '8:30 am',
+            emoji: '🍳',
+            name: 'Breakfast — Hotel Café Royal',
+            details: '',
+            mapsQuery: 'Hotel Cafe Royal London'
+          },
+          {
+            time: '9:00 am',
+            emoji: '🧖',
+            name: 'Akasha Spa',
+            link: 'https://www.hotelcaferoyal.com/wellbeing/akasha',
+            details: 'Pool · spa · jacuzzi · hammam!'
+          },
+          {
+            time: '10:00 am',
+            emoji: '💆',
+            name: 'Swedish Massage — David',
+            details: 'Reservation made'
+          },
+          {
+            time: '11:00 am',
+            emoji: '🏨',
+            name: 'Back to room to get ready',
+            details: ''
+          },
+          {
+            time: '11:30 am',
+            emoji: '🚌',
+            name: 'Travel to Kensington',
+            details: '',
+            transportDir: {
+              name: '11:30 am — Hotel → Kensington',
+              steps: [
+                { icon: 'Board', text: 'Board Bus N9 at Piccadilly Circus Stop S (toward Heathrow T5)' },
+                { icon: 'Ride', text: 'Ride Bus N9 — 12 stops' },
+                { icon: 'Exit', text: 'Exit at High Street Kensington Stop F' }
+              ],
+              time: '~20 min'
+            }
+          },
+          {
+            time: '12:00 pm',
+            emoji: '🍛',
+            name: 'Lunch — Dishoom Kensington',
+            link: 'https://www.dishoom.com/kensington',
+            details: 'Naan · chicken ruby · tikka?',
+            mapsQuery: 'Dishoom Kensington London',
+            walkTo: 'Walk 10 min to Kensington Palace',
+            walkMapsQuery: 'Kensington Palace, London, UK'
+          },
+          {
+            time: '1:00 pm',
+            emoji: '👑',
+            name: 'Kensington Palace & Gardens',
+            link: 'https://www.hrp.org.uk/kensington-palace/',
+            details: 'Queen Victoria statue · Round Pond · Princess Diana memorial fountain · Rose garden · Birds!',
+            walkTo: 'Walk to Rutland Gardens bus stop · 5 min',
+            mapsQuery: 'Rutland Gardens bus stop, London, UK'
+          },
+          {
+            time: '2:15 pm',
+            emoji: '🚌',
+            name: 'Travel to Piccadilly',
+            details: '',
+            transportDir: {
+              name: '2:15 pm — Kensington → Piccadilly',
+              steps: [
+                { icon: 'Board', text: 'Board Bus 9 at Rutland Gardens Stop KP' },
+                { icon: 'Ride', text: 'Ride Bus 9 — 5 stops' },
+                { icon: 'Exit', text: 'Exit at Old Bond Street / Royal Academy Stop L' }
+              ],
+              time: '~15 min'
+            }
+          },
+          {
+            time: '2:45 pm',
+            emoji: '🫖',
+            name: 'Fortnum & Mason',
+            link: 'https://www.fortnumandmason.com',
+            details: 'Ground floor: tea wall, biscuits, honey, jam · Upstairs: chocolate & confectionaries',
+            walkTo: 'Walk 15 min to The Connaught',
+            mapsQuery: 'The Connaught Hotel, London, UK'
+          },
+          {
+            time: '4:00 pm',
+            emoji: '🍸',
+            name: 'Drinks — The Connaught',
+            link: 'https://www.the-connaught.co.uk/bars/connaught-bar',
+            details: 'Look for: Egg Bubble · Martini'
+          },
+          {
+            time: '7:00 pm',
+            emoji: '🥔',
+            name: 'Dinner — Mother Mash',
+            link: 'https://www.mothermash.co.uk',
+            details: '',
+            mapsQuery: 'Mother Mash Covent Garden London',
+            reservation: {
+              bookedBy: 'James',
+              partySize: 6
+            }
+          }
+        ],
+        transport: []
+      },
+      {
+        number: 28,
+        date: 'Tuesday, April 28',
+        theme: '🌉 South Bank Farewell',
+        weather: {
+          temp: '15°C / 59°F',
+          icon: '⛅',
+          desc: 'Partly cloudy',
+          rain: '35% rain'
+        },
+        stops: [
+          {
+            time: '8:00 am',
+            emoji: '🍳',
+            name: 'Breakfast — Hotel Café Royal',
+            details: 'Drop bags at front desk before heading out',
+            mapsQuery: 'Hotel Cafe Royal London'
+          },
+          {
+            time: '9:00 am',
+            emoji: '📚',
+            name: 'Waterstones Bookstore',
+            link: 'https://www.waterstones.com/bookshops/piccadilly',
+            details: '',
+            walkTo: 'Walk 10 min to Oxford Circus Station',
+            mapsQuery: 'Oxford Circus Station, London, UK'
+          },
+          {
+            time: '10:00 am',
+            emoji: '🚇',
+            name: 'Travel to St. Paul\'s',
+            details: '',
+            transportDir: {
+              name: '10:00 am — Hotel → St. Paul\'s',
+              steps: [
+                { icon: 'Board', text: 'Board at Oxford Circus — Central line (toward Hainault)' },
+                { icon: 'Ride', text: 'Ride Central line — 4 stops' },
+                { icon: 'Exit', text: 'Exit at St. Paul\'s' }
+              ],
+              time: '~30 min'
+            }
+          },
+          {
+            time: '10:30 am',
+            emoji: '⛪',
+            name: 'St. Paul\'s + Globe Theatre',
+            link: 'https://www.shakespearesglobe.com',
+            details: 'St. Paul\'s: exterior only — front steps, nave, Whispering Gallery from below · Cross Millennium Bridge to Globe · Globe exterior',
+            walkTo: 'Walk across Millennium Bridge + 10 min to Borough Market',
+            mapsQuery: 'Borough Market, London, UK'
+          },
+          {
+            time: '11:30 am',
+            emoji: '🥩',
+            name: 'Borough Market',
+            link: 'https://www.boroughmarket.org.uk',
+            details: 'Eat and browse for 2–2.5 hours'
+          },
+          {
+            time: '2:00 pm',
+            emoji: '🚗',
+            name: 'Travel back to Hotel Café Royal',
+            details: ''
+          },
+          {
+            time: '5:45 pm',
+            emoji: '✈️',
+            name: 'DL0021 departs LHR',
+            details: '→ SEA arriving 8:04 pm'
+          }
+        ],
+        transport: []
+      }
+    ];
+
+    // Checklist persistence
+    function getCheckedItems() {
+      try { return JSON.parse(localStorage.getItem('london2026-checked') || '{}'); }
+      catch { return {}; }
+    }
+
+    function saveCheckedItems(checked) {
+      try { localStorage.setItem('london2026-checked', JSON.stringify(checked)); }
+      catch {}
+    }
+
+    function setupChecklists() {
+      const checked = getCheckedItems();
+      document.querySelectorAll('.stop-checklist-item input[type="checkbox"]').forEach(cb => {
+        const key = cb.getAttribute('data-key');
+        if (checked[key]) cb.checked = true;
+        // Apply visual state
+        if (cb.checked) cb.nextElementSibling.style.textDecoration = 'line-through';
+        cb.addEventListener('change', () => {
+          const items = getCheckedItems();
+          items[key] = cb.checked;
+          saveCheckedItems(items);
+          cb.nextElementSibling.style.textDecoration = cb.checked ? 'line-through' : 'none';
+        });
+      });
+    }
+
+    // Initialize
+    function init() {
+      renderDayCards();
+      setupChecklists();
+      initPackingList();
+      setupEventListeners();
+      registerServiceWorker();
+    }
+
+    // Render day cards
+    function renderDayCards() {
+      const container = document.getElementById('dayCards');
+      // #3: Detect today's date for highlighting
+      const now = new Date();
+      const todayDay = (now.getFullYear() === 2026 && now.getMonth() === 3) ? now.getDate() : null;
+
+      container.innerHTML = dayData.map(day => `
+        <div class="day-card ${day.number === todayDay ? 'expanded today-card' : (day.number === 21 && !todayDay ? 'expanded' : '')} ${day.isMarathon ? 'marathon' : ''}" data-day="${day.number}">
+          <div class="day-card-header">
+            <div class="day-header-content">
+              <div class="day-number">${day.number}</div>
+              <div class="day-date">${day.date}</div>
+              <div class="day-theme">${day.theme}</div>
+            </div>
+            <div class="day-toggle">▼</div>
+          </div>
+          <div class="day-content">
+            ${day.weather ? `
+              <div class="weather-bar">
+                <span class="weather-icon">${day.weather.icon}</span>
+                <div class="weather-details">
+                  <div class="weather-item">
+                    <span class="weather-label">Temp:</span>
+                    <span class="weather-value">${day.weather.temp}</span>
+                  </div>
+                  <div class="weather-item">
+                    <span class="weather-label">${day.weather.desc}</span>
+                  </div>
+                  <div class="weather-item">
+                    <span class="weather-label">Rain:</span>
+                    <span class="weather-value">${day.weather.rain}</span>
+                  </div>
+                </div>
+              </div>
+            ` : ''}
+            <div class="stop-list">
+              <div class="stop-connector"></div>
+              ${day.stops.map((stop, idx) => `
+                <div class="stop" data-stop-idx="${idx}">
+                  <div class="timeline-dot"></div>
+                  <div class="stop-time">${stop.time}</div>
+                  <div class="stop-header">
+                    <span class="stop-emoji">${stop.emoji}</span>
+                    <span class="stop-name">${stop.link ? `<a href="${stop.link}" target="_blank" rel="noopener">${stop.name}</a>` : stop.name}</span>
+                  </div>
+                  ${stop.checklist ? `
+                    <div class="stop-checklist">
+                      ${stop.checklist.map((item, i) => `
+                        <div class="stop-checklist-item">
+                          <input type="checkbox" id="chk-${day.number}-${idx}-${i}" data-key="d${day.number}-s${idx}-${i}">
+                          <label for="chk-${day.number}-${idx}-${i}">${item}</label>
+                        </div>
+                      `).join('')}
+                    </div>
+                  ` : (stop.details ? `
+                    <div class="stop-details">${stop.details}</div>
+                  ` : '')}
+                  ${stop.reservation ? `
+                    <div class="tags">
+                      <span class="tag tag-reservation">📋 ${stop.reservation.bookedBy} · ${stop.reservation.partySize} people</span>
+                    </div>
+                  ` : ''}
+                  ${stop.tickets ? `
+                    <div class="tags">
+                      <span class="tag tag-ticket">🎟 ${stop.tickets.name}</span>
+                    </div>
+                    <button class="ticket-btn-large" onclick="viewTicket('${stop.tickets.name}', '${stop.tickets.pdf}')">🎟 View ${stop.tickets.name} Tickets</button>
+                  ` : ''}
+                  ${stop.mapsQuery && !stop.transportDir ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(stop.mapsQuery)}" target="_blank" rel="noopener" class="maps-link stop-maps-link">📍 Open in Maps</a>` : ''}
+                </div>
+                ${stop.walkTo ? `
+                  <div class="walk-transition">
+                    <span class="walk-icon">🚶</span>
+                    <span>${stop.walkTo}</span>
+                    ${stop.walkMapsQuery ? `
+                      <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(stop.walkMapsQuery)}&travelmode=walking" target="_blank" rel="noopener" class="maps-link">Open in Maps</a>
+                    ` : ''}
+                  </div>
+                ` : ''}
+                ${stop.transportDir ? `
+                  <div class="inline-transport">
+                    <div class="inline-transport-title">${stop.transportDir.name}</div>
+                    ${stop.transportDir.steps.map(step => `
+                      <div class="transport-step">
+                        <div class="transport-step-icon step-${step.icon.toLowerCase()}">${getStepIcon(step.icon)}</div>
+                        <span>${step.text}</span>
+                      </div>
+                    `).join('')}
+                    <div class="transport-time">${stop.transportDir.time}</div>
+                    ${stop.mapsQuery ? `
+                      <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(stop.mapsQuery)}&travelmode=transit" target="_blank" rel="noopener" class="maps-link">Open in Maps</a>
+                    ` : ''}
+                  </div>
+                ` : ''}
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // #3: Highlight today's pill
+      if (todayDay) {
+        const todayPill = document.querySelector(`.day-pill[data-day="${todayDay}"]`);
+        if (todayPill) {
+          todayPill.classList.add('today');
+          document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('active'));
+          todayPill.classList.add('active');
+        }
+      }
+    }
+
+    // Get transport step icon
+    function getStepIcon(iconType) {
+      const icons = {
+        board: '▶',
+        ride: '↓',
+        transfer: '⇄',
+        exit: '■',
+        walk: '🚶'
+      };
+      return icons[iconType.toLowerCase()] || '•';
+    }
+
+    // View ticket
+    function viewTicket(name, pdfPath) {
+      const modal = document.getElementById('ticketModal');
+      const title = document.getElementById('ticketTitle');
+      const iframe = document.getElementById('ticketIframe');
+      title.textContent = name;
+      iframe.src = pdfPath;
+      modal.classList.add('open');
+    }
+
+    // Packing Data Management
+    let packingListData = {};
+    let packingEditMode = false;
+
+    // Default packing list structure
+    const defaultPackingList = {
+      "✈️ Travel Essentials": [
+        { id: "passports", text: "Passports" },
+        { id: "insurance", text: "Travel insurance docs" },
+        { id: "tickets", text: "Boarding passes / e-tickets" },
+        { id: "chargers", text: "Phone chargers & power bank" },
+        { id: "adapter", text: "UK power adapter (Type G 3-prong)" },
+        { id: "cash", text: "Cash (some GBP)" },
+        { id: "cards", text: "Credit/debit cards (notify bank)" }
+      ],
+      "🏃 Marathon Gear": [
+        { id: "shoes", text: "Running shoes (race day pair - broken in!)" },
+        { id: "bib", text: "Race bib & timing chip" },
+        { id: "outfit", text: "Running outfit (test in training!)" },
+        { id: "gels", text: "Energy gels / fuel (what you've trained with)" },
+        { id: "glide", text: "Body Glide / anti-chafe" },
+        { id: "belt", text: "Running belt or armband for phone" },
+        { id: "layer", text: "Throwaway warm layer for start line" },
+        { id: "flips", text: "Post-race flip flops" },
+        { id: "compression", text: "Compression socks for recovery" },
+        { id: "hydration", text: "Hydration plan notes" }
+      ],
+      "👗 Clothing (April - Cool & Changeable)": [
+        { id: "raincoat", text: "Waterproof jacket or rain coat" },
+        { id: "layers", text: "Warm layers (fleece or jumper)" },
+        { id: "walk-shoes", text: "Comfortable walking shoes (separate from race shoes!)" },
+        { id: "smart-outfit", text: "Smart casual outfit (for Connaught Bar & nice dinners)" },
+        { id: "scarf", text: "Light scarf" },
+        { id: "sunglasses", text: "Sunglasses" },
+        { id: "pajamas", text: "Pajamas" },
+        { id: "underwear", text: "Underwear & socks (8 days worth)" }
+      ],
+      "🧴 Toiletries & Health": [
+        { id: "meds", text: "Prescription medications" },
+        { id: "painkillers", text: "Pain relievers (ibuprofen/paracetamol)" },
+        { id: "blister", text: "Plasters / blister patches" },
+        { id: "sunscreen", text: "Sunscreen" },
+        { id: "roller", text: "Foam roller or massage ball" },
+        { id: "toothbrush", text: "Toothbrush & toiletries" },
+        { id: "sanitizer", text: "Hand sanitizer" }
+      ],
+      "📱 Tech & Comfort": [
+        { id: "phone", text: "Phone + charger" },
+        { id: "camera", text: "Camera" },
+        { id: "umbrella", text: "Umbrella (compact)" },
+        { id: "bag", text: "Small crossbody bag or money belt" },
+        { id: "bottle", text: "Reusable water bottle" },
+        { id: "book", text: "Book or Kindle for flights" }
+      ]
+    };
+
+    // Initialize packing list from localStorage or use defaults
+    function initPackingList() {
+      const saved = localStorage.getItem('pack-dp-custom-list');
+      if (saved) {
+        try {
+          packingListData = JSON.parse(saved);
+        } catch (e) {
+          packingListData = JSON.parse(JSON.stringify(defaultPackingList));
+        }
+      } else {
+        packingListData = JSON.parse(JSON.stringify(defaultPackingList));
+      }
+      renderPacking();
+    }
+
+    // Render the entire packing list
+    function renderPacking() {
+      const packingSection = document.getElementById('packingSection');
+      const groupsContainer = packingSection.querySelector('.packing-groups-container');
+
+      if (!groupsContainer) {
+        console.log('Container not found, will create on first render');
+        return;
+      }
+
+      groupsContainer.innerHTML = '';
+
+      Object.keys(packingListData).forEach(categoryName => {
+        const items = packingListData[categoryName];
+        const group = document.createElement('div');
+        group.className = 'packing-group';
+        group.dataset.category = categoryName;
+
+        const header = document.createElement('div');
+        header.className = 'packing-group-header';
+        header.textContent = categoryName;
+        group.appendChild(header);
+
+        items.forEach(item => {
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'packing-item';
+          itemDiv.dataset.itemId = item.id;
+
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.className = 'pack-item';
+          checkbox.dataset.key = `pack-dp-${item.id}`;
+          checkbox.id = `pack-${item.id}`;
+
+          const saved = localStorage.getItem(checkbox.dataset.key);
+          if (saved === 'checked') {
+            checkbox.checked = true;
+          }
+
+          const label = document.createElement('label');
+          label.htmlFor = checkbox.id;
+          label.className = 'packing-item-text';
+          label.textContent = item.text;
+
+          const deleteBtn = document.createElement('button');
+          deleteBtn.className = 'packing-delete-btn';
+          deleteBtn.textContent = '✕';
+          deleteBtn.type = 'button';
+          deleteBtn.onclick = (e) => {
+            e.preventDefault();
+            deletePackingItem(categoryName, item.id);
+          };
+
+          itemDiv.appendChild(checkbox);
+          itemDiv.appendChild(label);
+          itemDiv.appendChild(deleteBtn);
+
+          label.addEventListener('click', (e) => {
+            if (packingEditMode && !checkbox.checked) {
+              e.preventDefault();
+              startEditingItem(label, item, categoryName);
+            }
+          });
+
+          checkbox.addEventListener('change', () => {
+            if (checkbox.checked) {
+              localStorage.setItem(checkbox.dataset.key, 'checked');
+            } else {
+              localStorage.removeItem(checkbox.dataset.key);
+            }
+            updatePackingProgress();
+          });
+
+          group.appendChild(itemDiv);
+        });
+
+        // Add item input if in edit mode
+        if (packingEditMode) {
+          const inputRow = document.createElement('div');
+          inputRow.className = 'packing-item-input-row';
+
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.placeholder = 'Add item...';
+          input.className = 'packing-add-input';
+
+          const addBtn = document.createElement('button');
+          addBtn.className = 'packing-add-btn';
+          addBtn.textContent = '+';
+          addBtn.type = 'button';
+          addBtn.onclick = () => {
+            if (input.value.trim()) {
+              addPackingItem(categoryName, input.value.trim());
+              input.value = '';
+              input.focus();
+            }
+          };
+
+          input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+              addBtn.click();
+            }
+          });
+
+          inputRow.appendChild(input);
+          inputRow.appendChild(addBtn);
+          group.appendChild(inputRow);
+        }
+
+        groupsContainer.appendChild(group);
+      });
+
+      // Add category button if in edit mode
+      if (packingEditMode) {
+        const addCategoryBtn = document.createElement('button');
+        addCategoryBtn.className = 'packing-add-category-btn';
+        addCategoryBtn.textContent = '+ Add Category';
+        addCategoryBtn.type = 'button';
+        addCategoryBtn.onclick = addPackingCategory;
+        groupsContainer.appendChild(addCategoryBtn);
+      }
+
+      updatePackingProgress();
+    }
+
+    // Add a new packing item
+    function addPackingItem(categoryName, text) {
+      if (!packingListData[categoryName]) {
+        return;
+      }
+
+      const newId = `custom-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      packingListData[categoryName].push({ id: newId, text });
+      savePackingList();
+      renderPacking();
+    }
+
+    // Delete a packing item
+    function deletePackingItem(categoryName, itemId) {
+      if (!packingListData[categoryName]) {
+        return;
+      }
+
+      packingListData[categoryName] = packingListData[categoryName].filter(item => item.id !== itemId);
+
+      // Remove checkbox from localStorage
+      localStorage.removeItem(`pack-dp-${itemId}`);
+
+      // If category is empty and is custom, remove it
+      if (packingListData[categoryName].length === 0) {
+        delete packingListData[categoryName];
+      }
+
+      savePackingList();
+      renderPacking();
+    }
+
+    // Edit a packing item
+    function startEditingItem(label, item, categoryName) {
+      if (!packingEditMode) return;
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = item.text;
+      input.className = 'packing-item-edit-input';
+
+      label.textContent = '';
+      label.className = 'packing-item-text editing';
+      label.appendChild(input);
+      input.focus();
+      input.select();
+
+      const saveEdit = () => {
+        const newText = input.value.trim();
+        if (newText && newText !== item.text) {
+          item.text = newText;
+          savePackingList();
+        }
+        renderPacking();
+      };
+
+      input.addEventListener('blur', saveEdit);
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          saveEdit();
+        }
+      });
+    }
+
+    // Add a new category
+    function addPackingCategory() {
+      const categoryName = prompt('Enter category name with emoji (e.g., "🎒 Backpack Items"):');
+      if (categoryName && categoryName.trim()) {
+        packingListData[categoryName.trim()] = [];
+        savePackingList();
+        renderPacking();
+      }
+    }
+
+    // Toggle edit mode
+    function togglePackingEditMode() {
+      packingEditMode = !packingEditMode;
+      const packingSection = document.getElementById('packingSection');
+      const editBtn = document.getElementById('packingEditBtn');
+      const resetBtn = document.getElementById('packingResetBtn');
+
+      if (packingEditMode) {
+        packingSection.classList.add('packing-edit-mode');
+        editBtn.textContent = '✅ Done Editing';
+        editBtn.className = 'packing-done-btn';
+        resetBtn.style.display = 'none';
+      } else {
+        packingSection.classList.remove('packing-edit-mode');
+        editBtn.textContent = '✏️ Edit List';
+        editBtn.className = 'packing-edit-btn';
+        resetBtn.style.display = 'block';
+      }
+
+      renderPacking();
+    }
+
+    // Toggle reset menu
+    function toggleResetMenu() {
+      const menu = document.getElementById('resetMenu');
+      menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // Reset checkboxes only
+    function resetPackingCheckboxes() {
+      document.querySelectorAll('.pack-item').forEach(item => {
+        item.checked = false;
+        localStorage.removeItem(item.getAttribute('data-key'));
+      });
+      updatePackingProgress();
+    }
+
+    // Reset to original list
+    function resetPackingToDefaults() {
+      if (confirm('This will restore the original packing list and remove all customizations. Continue?')) {
+        localStorage.removeItem('pack-dp-custom-list');
+        document.querySelectorAll('.pack-item').forEach(item => {
+          localStorage.removeItem(item.getAttribute('data-key'));
+        });
+        packingListData = JSON.parse(JSON.stringify(defaultPackingList));
+        packingEditMode = false;
+        renderPacking();
+        const packingSection = document.getElementById('packingSection');
+        packingSection.classList.remove('packing-edit-mode');
+        document.getElementById('packingEditBtn').textContent = '✏️ Edit List';
+        document.getElementById('packingEditBtn').className = 'packing-edit-btn';
+        document.getElementById('packingResetBtn').style.display = 'block';
+      }
+    }
+
+    // Save packing list to localStorage
+    function savePackingList() {
+      localStorage.setItem('pack-dp-custom-list', JSON.stringify(packingListData));
+    }
+
+    // Update packing progress
+    function updatePackingProgress() {
+      const items = document.querySelectorAll('.pack-item');
+      const checked = document.querySelectorAll('.pack-item:checked');
+      const progress = checked.length;
+      const total = items.length;
+      const percentage = total > 0 ? (progress / total) * 100 : 0;
+
+      document.getElementById('packingProgress').textContent = `${progress} of ${total}`;
+      document.getElementById('packingProgressBar').style.width = `${percentage}%`;
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Day pills (including Resources toggle)
+      document.querySelectorAll('.day-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+          const view = pill.getAttribute('data-view');
+          const dayCards = document.getElementById('dayCards');
+          const resources = document.getElementById('resourcesSection');
+          const packing = document.getElementById('packingSection');
+          const footer = document.getElementById('appFooter');
+
+          document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+
+          if (view === 'resources') {
+            dayCards.style.display = 'none';
+            footer.style.display = 'none';
+            packing.classList.remove('active');
+            resources.classList.add('active');
+            resources.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          } else if (view === 'packing') {
+            dayCards.style.display = 'none';
+            footer.style.display = 'none';
+            resources.classList.remove('active');
+            packing.classList.add('active');
+            packing.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            updatePackingProgress();
+          } else {
+            dayCards.style.display = '';
+            footer.style.display = '';
+            resources.classList.remove('active');
+            packing.classList.remove('active');
+            const day = parseInt(pill.getAttribute('data-day'));
+            const dayCard = document.querySelector(`[data-day="${day}"]`);
+            if (dayCard) {
+              document.querySelectorAll('.day-card').forEach(card => card.classList.remove('expanded'));
+              dayCard.classList.add('expanded');
+              dayCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }
+        });
+      });
+
+      // Day card headers
+      document.querySelectorAll('.day-card-header').forEach(header => {
+        header.addEventListener('click', () => {
+          const card = header.closest('.day-card');
+          card.classList.toggle('expanded');
+        });
+      });
+
+      // Modal close
+      document.getElementById('modalClose').addEventListener('click', () => {
+        document.getElementById('ticketModal').classList.remove('open');
+      });
+
+      document.getElementById('ticketModal').addEventListener('click', (e) => {
+        if (e.target.id === 'ticketModal') {
+          document.getElementById('ticketModal').classList.remove('open');
+        }
+      });
+
+      // #1: Back to top button
+      const backToTop = document.getElementById('backToTop');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 400) {
+          backToTop.classList.add('visible');
+        } else {
+          backToTop.classList.remove('visible');
+        }
+      });
+      backToTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // #4: Flight bar toggle
+      const flightBar = document.getElementById('flightBar');
+      const flightToggle = document.getElementById('flightToggle');
+      flightToggle.addEventListener('click', () => {
+        flightBar.classList.toggle('collapsed');
+        flightToggle.textContent = flightBar.classList.contains('collapsed')
+          ? '✈️ Show Flight Info'
+          : '✈️ Flight Info';
+      });
+      // Auto-collapse on days that aren't arrival/departure
+      const now = new Date();
+      if (now.getFullYear() === 2026 && now.getMonth() === 3 && now.getDate() > 21 && now.getDate() < 28) {
+        flightBar.classList.add('collapsed');
+        flightToggle.textContent = '✈️ Show Flight Info';
+      }
+
+      // Close reset menu when clicking outside
+      document.addEventListener('click', (e) => {
+        const resetMenu = document.getElementById('resetMenu');
+        const resetBtn = document.getElementById('packingResetBtn');
+        if (resetMenu && !resetBtn.contains(e.target) && !resetMenu.contains(e.target)) {
+          resetMenu.style.display = 'none';
+        }
+      });
+    }
+
+    // Register service worker
+    function registerServiceWorker() {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(err => {
+          console.log('Service worker registration failed:', err);
+        });
+      }
+    }
+
+    // Start app
+    init();
+  </script>
+</body>
+</html>
