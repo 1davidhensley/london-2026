@@ -1787,8 +1787,22 @@
       <div class="resource-item">
         <span class="resource-item-icon">📦</span>
         <div class="resource-item-content">
-          <div class="resource-item-name"><a href="https://www.tcslondonmarathon.com/the-event/marathon-expo" target="_blank">Marathon Expo</a></div>
-          <div class="resource-item-detail">ExCeL London — bib pickup, merchandise, and race prep</div>
+          <div class="resource-item-name"><a href="https://www.tcslondonmarathon.com/the-event/marathon-expo" target="_blank">Running Show / Expo</a></div>
+          <div class="resource-item-detail">ExCeL London · Apr 22-25 · Bib #60613 pickup · Bring QR code + photo ID</div>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🎽</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name"><a href="https://mail.google.com/mail/u/0/#search/tcs/FMfcgzQgLFkHgMQZXRgMPbLCvlGDWZdG" target="_blank">QR Code Email (for bib pickup)</a></div>
+          <div class="resource-item-detail">TCS email with QR code — required to collect Event Pack</div>
+        </div>
+      </div>
+      <div class="resource-item">
+        <span class="resource-item-icon">🔵</span>
+        <div class="resource-item-content">
+          <div class="resource-item-name">David's Start Info</div>
+          <div class="resource-item-detail">Bib #60613 · Blue Assembly · Wave 10 · Start 10:23 · Blackheath · Arrive by 09:02</div>
         </div>
       </div>
     </div>
@@ -2210,9 +2224,17 @@
           {
             time: '3:00 pm',
             emoji: '🏃',
-            name: 'Marathon Expo',
-            details: 'Pick up race packet!',
-            link: 'https://www.tcslondonmarathon.com/the-event/marathon-expo'
+            name: 'TCS London Marathon Running Show',
+            details: 'Bib #60613 — Bring QR code (in email) + photo ID (passport) to collect Event Pack. Pack contains: bib with timing chip, safety pins, official kitbag, kitbag sticker. Registration deadline: Sat 25 Apr 17:30.',
+            link: 'https://www.tcslondonmarathon.com/the-event/marathon-expo',
+            checklist: [
+              'Show QR code from TCS email',
+              'Show photo ID (passport)',
+              'Collect bib #60613 + timing chip + pins',
+              'Collect official kitbag + sticker',
+              'Fill out medical info on back of bib',
+              'Browse Running Show exhibitors'
+            ]
           },
           {
             time: '4:00 pm',
@@ -2667,6 +2689,20 @@
               bookedBy: 'James',
               partySize: 6
             }
+          },
+          {
+            time: '8:30 pm',
+            emoji: '🌙',
+            name: 'Race Prep & Early Night',
+            details: 'Deferral deadline: 23:59 tonight. Lay out kit, pin bib #60613, charge phone, set alarm for 7:30 am. Blackheath trains: 08:42 / 08:47 / 08:53.',
+            checklist: [
+              'Pin bib #60613 to race top',
+              'Lay out race kit + shoes',
+              'Pack kitbag for post-race (snack, warm layer, phone charger)',
+              'Charge phone overnight',
+              'Set alarm — 7:30 am',
+              'Check morning weather forecast'
+            ]
           }
         ],
         transport: []
@@ -2692,9 +2728,73 @@
           },
           {
             time: '—',
+            emoji: '🎽',
+            name: 'David\'s Start Info',
+            details: 'Bib #60613 · BLUE Assembly Area · Wave 10 · Blue Start Line · Nearest station: Blackheath (10-min walk)',
+            checklist: [
+              'Bib pinned to front of shirt',
+              'Timing chip attached',
+              'Medical info filled on bib back',
+              'Phone charged',
+              'Kitbag packed with post-race snack'
+            ]
+          },
+          {
+            time: '8:42 am',
+            emoji: '🚂',
+            name: 'Train to Blackheath',
+            details: 'FREE travel — show bib, do NOT tap in/out at any station. Train options: 08:42 / 08:47 / 08:53. Southeastern trains from London stations.',
+            transportDir: {
+              name: 'Morning — Hotel → Blackheath',
+              steps: [
+                { icon: 'Walk', text: 'Walk to Charing Cross or London Bridge station' },
+                { icon: 'Board', text: 'Board Southeastern train to Blackheath' },
+                { icon: 'Exit', text: 'Exit at Blackheath — 10 min walk to Blue Assembly Area' }
+              ],
+              time: 'Arrive by 09:02'
+            }
+          },
+          {
+            time: '9:02 am',
+            emoji: '🔵',
+            name: 'Arrive at Blue Assembly Area',
+            details: 'Drop kitbag at lorry matching bib number. Use toilets. Donate unwanted layers at collection points near Start Line.',
+            checklist: [
+              'Drop kitbag at correct lorry',
+              'Use toilets',
+              'Hydrate at Water Refill Station',
+              'Head to Blue Start Line before 10:23'
+            ]
+          },
+          {
+            time: '10:23 am',
+            emoji: '🏁',
+            name: 'Wave 10 Start!',
+            details: 'All start lines close at 11:30. Follow pacers with flags if targeting a time. Blue line on road = shortest route.'
+          },
+          {
+            time: '—',
+            emoji: '💧',
+            name: 'On-Course Hydration & Aid',
+            details: 'Water: Miles 5, 10, 14, 17, 20 · Buxton water every 3mi (Mile 3→12), every 2mi (Mile 12→24) · Lucozade Sport: Miles 7, 15, 21, 23 · Gels: Miles 13, 19 · Vaseline: Miles 14, 17, 20, 22 · Toilets: every mile (1→24)'
+          },
+          {
+            time: '—',
             emoji: '📍',
-            name: 'Viewing Spots',
-            details: 'Tower Bridge (Mile 12/13) · Victoria Embankment (Mile 24/25)'
+            name: 'Spectator Viewing Spots',
+            details: 'Cutty Sark (Mile 6) · Tower Bridge (Mile 12/13) · Canary Wharf (Mile 17-19) · Victoria Embankment (Mile 24/25) · The Mall / Buckingham Palace (Finish!)'
+          },
+          {
+            time: '—',
+            emoji: '🏆',
+            name: 'After Crossing the Finish Line',
+            details: 'Keep moving! Collect: finisher medal, water, GetPRO yoghurt, Lucozade. Retrieve kitbag from lorry by bib number. Meet & Greet Area: up to 30-min walk — lettered Meeting Points at Whitehall, Horse Guards Parade, Horse Guards Road. Pick a letter, avoid relying on phone signal.',
+            checklist: [
+              'Collect finisher medal',
+              'Retrieve kitbag from lorry',
+              'Meet family at agreed Meeting Point letter',
+              'Free travel home until 20:00 (Underground, Overground, Elizabeth line, buses, DLR)'
+            ]
           },
           {
             time: '4:45 pm',
