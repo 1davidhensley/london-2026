@@ -267,7 +267,7 @@
     }
 
     .day-card.expanded .day-content {
-      max-height: 3000px;
+      max-height: 5000px;
     }
 
     .stop-list {
@@ -1838,7 +1838,7 @@
         <span class="resource-item-icon">🎖</span>
         <div class="resource-item-content">
           <div class="resource-item-name"><a href="https://www.iwm.org.uk/visits/churchill-war-rooms" target="_blank">Churchill War Rooms</a></div>
-          <div class="resource-item-detail">Apr 25 · Tickets TBD</div>
+          <div class="resource-item-detail">Apr 25 · <a href="https://mail.google.com/mail/u/0/#inbox/FMfcgzQgLFprwxqKTRLfQfHbgZXGXTsq" target="_blank">View Tickets</a></div>
           <a href="tel:+442074165000" class="resource-item-phone">+44 20 7416 5000</a>
         </div>
       </div>
@@ -2589,7 +2589,11 @@
               'Bunker life exhibits',
               'Churchill Museum — interactive timeline',
               'Speeches and personal artifacts'
-            ]
+            ],
+            emailTicket: {
+              name: 'Churchill War Rooms',
+              url: 'https://mail.google.com/mail/u/0/#inbox/FMfcgzQgLFprwxqKTRLfQfHbgZXGXTsq'
+            }
           },
           {
             time: '11:15 am',
@@ -3117,6 +3121,12 @@
                       <span class="tag tag-ticket">🎟 ${stop.tickets.name}</span>
                     </div>
                     <button class="ticket-btn-large" onclick="viewTicket('${stop.tickets.name}', '${stop.tickets.pdf}')">🎟 View ${stop.tickets.name} Tickets</button>
+                  ` : ''}
+                  ${stop.emailTicket ? `
+                    <div class="tags">
+                      <span class="tag tag-ticket">🎟 ${stop.emailTicket.name}</span>
+                    </div>
+                    <a href="${stop.emailTicket.url}" target="_blank" rel="noopener" class="ticket-btn-large">🎟 View ${stop.emailTicket.name} Tickets</a>
                   ` : ''}
                   ${stop.mapsQuery && !stop.transportDir ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(stop.mapsQuery)}" target="_blank" rel="noopener" class="maps-link stop-maps-link">📍 Open in Maps</a>` : ''}
                 </div>
