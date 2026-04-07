@@ -3045,12 +3045,84 @@
     }
 
     // Initialize
+    // Weather: WMO weather code → emoji + description
+    const WMO_CODES = {
+      0: ['☀️', 'Clear sky'], 1: ['🌤', 'Mainly clear'], 2: ['⛅', 'Partly cloudy'], 3: ['☁️', 'Overcast'],
+      45: ['🌫', 'Foggy'], 48: ['🌫', 'Icy fog'],
+      51: ['🌦', 'Light drizzle'], 53: ['🌦', 'Drizzle'], 55: ['🌧', 'Heavy drizzle'],
+      61: ['🌧', 'Light rain'], 63: ['🌧', 'Rain'], 65: ['🌧', 'Heavy rain'],
+      71: ['🌨', 'Light snow'], 73: ['🌨', 'Snow'], 75: ['🌨', 'Heavy snow'],
+      80: ['🌦', 'Light showers'], 81: ['🌧', 'Showers'], 82: ['🌧', 'Heavy showers'],
+      95: ['⛈', 'Thunderstorm'], 96: ['⛈', 'Thunderstorm + hail'], 99: ['⛈', 'Heavy thunderstorm']
+    };
+
+    // Fetch real weather from Open-Meteo (free, no API key)
+    function fetchWeather() {
+      const url = 'https://api.open-meteo.com/v1/forecast?latitude=51.5074&longitude=-0.1278' +
+        '&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weathercode' +
+        '&timezone=Europe/London&forecast_days=16';
+
+      fetch(url)
+        .then(r => r.json())
+        .then(data => {
+          if (!data.daily || !data.daily.time) return;
+          const daily = data.daily;
+          // Build a lookup: '2026-04-21' → { temp, icon, desc, rain }
+          const forecastMap = {};
+          daily.time.forEach((dateStr, i) => {
+            if (daily.temperature_2m_max[i] === null) return;
+            const hi = Math.round(daily.temperature_2m_max[i]);
+            const lo = Math.round(daily.temperature_2m_min[i]);
+            const hiF = Math.round(hi * 9/5 + 32);
+            const loF = Math.round(lo * 9/5 + 32);
+            const code = daily.weathercode[i];
+            const [icon, desc] = WMO_CODES[code] || ['⛅', 'Partly cloudy'];
+            const rain = daily.precipitation_probability_max[i] || 0;
+            forecastMap[dateStr] = {
+              temp: `${hi}°C / ${hiF}°F (Low: ${lo}°C / ${loF}°F)`,
+              icon: icon,
+              desc: desc,
+              rain: `${rain}% rain`
+            };
+          });
+
+          // Update weather bars in the DOM directly (no full re-render — preserves checklist state)
+          let updated = 0;
+          dayData.forEach(day => {
+            const dateKey = `2026-04-${String(day.number).padStart(2, '0')}`;
+            if (!forecastMap[dateKey]) return;
+            const fc = forecastMap[dateKey];
+            const isMarathon = day.number === 26;
+            // Update data model
+            day.weather = { ...fc, rain: isMarathon ? fc.rain + ' — check morning forecast' : fc.rain };
+            // Update DOM
+            const bar = document.querySelector(`[data-weather-day="${day.number}"]`);
+            if (bar) {
+              bar.querySelector('.weather-icon').textContent = fc.icon;
+              bar.querySelector('.weather-temp').textContent = day.weather.temp;
+              bar.querySelector('.weather-desc').textContent = fc.desc;
+              bar.querySelector('.weather-rain').textContent = day.weather.rain;
+              updated++;
+            }
+          });
+
+          if (updated) {
+            console.log(`[Weather] Updated ${updated} days with live forecast from Open-Meteo`);
+          }
+        })
+        .catch(err => {
+          console.log('[Weather] Using fallback averages — fetch failed:', err.message);
+        });
+    }
+
     function init() {
       renderDayCards();
       setupChecklists();
       initPackingList();
       setupEventListeners();
       registerServiceWorker();
+      // Fetch live weather (non-blocking — falls back to hardcoded averages if offline)
+      fetchWeather();
     }
 
     // Render day cards
@@ -3072,19 +3144,19 @@
           </div>
           <div class="day-content">
             ${day.weather ? `
-              <div class="weather-bar">
+              <div class="weather-bar" data-weather-day="${day.number}">
                 <span class="weather-icon">${day.weather.icon}</span>
                 <div class="weather-details">
                   <div class="weather-item">
                     <span class="weather-label">Temp:</span>
-                    <span class="weather-value">${day.weather.temp}</span>
+                    <span class="weather-value weather-temp">${day.weather.temp}</span>
                   </div>
                   <div class="weather-item">
-                    <span class="weather-label">${day.weather.desc}</span>
+                    <span class="weather-label weather-desc">${day.weather.desc}</span>
                   </div>
                   <div class="weather-item">
                     <span class="weather-label">Rain:</span>
-                    <span class="weather-value">${day.weather.rain}</span>
+                    <span class="weather-value weather-rain">${day.weather.rain}</span>
                   </div>
                 </div>
               </div>
