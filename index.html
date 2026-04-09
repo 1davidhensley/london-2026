@@ -894,6 +894,119 @@
       color: var(--text-dim);
     }
 
+    /* ---- Birds to Spot ---- */
+    .birds-chip {
+      margin: 0.5rem 0 0.75rem;
+      background: #f1f7ed;
+      border: 1px solid #cfe1c2;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: background 0.15s ease;
+    }
+
+    .birds-chip-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 0.9rem;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--primary);
+      user-select: none;
+      touch-action: manipulation;
+    }
+
+    .birds-chip-header .chevron {
+      margin-left: auto;
+      font-size: 0.7rem;
+      transition: transform 0.2s ease;
+    }
+
+    .birds-chip.expanded .chevron {
+      transform: rotate(180deg);
+    }
+
+    .birds-chip-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.25s ease;
+    }
+
+    .birds-chip.expanded .birds-chip-body {
+      max-height: 800px;
+    }
+
+    .bird-entry {
+      padding: 0.6rem 0.9rem;
+      border-top: 1px solid #dbe9d0;
+    }
+
+    .bird-entry-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--primary);
+      margin-bottom: 0.15rem;
+    }
+
+    .bird-entry-blurb {
+      font-size: 0.82rem;
+      color: var(--text);
+      line-height: 1.4;
+      margin-bottom: 0.25rem;
+    }
+
+    .bird-entry-where {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      font-style: italic;
+    }
+
+    /* Resources page bird section */
+    .birds-resource-counter {
+      font-size: 0.78rem;
+      font-weight: 400;
+      opacity: 0.9;
+      margin-left: auto;
+    }
+
+    .bird-resource-row {
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .bird-resource-row:last-child {
+      border-bottom: none;
+    }
+
+    .bird-resource-row input[type="checkbox"] {
+      margin-top: 0.2rem;
+      width: 20px;
+      height: 20px;
+      accent-color: var(--primary);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .bird-resource-row .bird-content {
+      flex: 1;
+    }
+
+    .bird-resource-row.spotted .bird-entry-name {
+      text-decoration: line-through;
+      opacity: 0.55;
+    }
+
+    .bird-resource-row .bird-fun-fact {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 0.3rem;
+      font-style: italic;
+    }
+
     .stop-maps-link {
       margin-top: 0.5rem;
     }
@@ -1569,6 +1682,21 @@
 
       .weather-value {
         color: var(--text-dim);
+      }
+
+      /* Birds to Spot — dark mode */
+      .birds-chip {
+        background: #1f2a1e;
+        border-color: #2f4128;
+      }
+      .bird-entry {
+        border-top-color: #2f4128;
+      }
+      .birds-chip-header {
+        color: #b3d6a8;
+      }
+      .bird-entry-name {
+        color: #b3d6a8;
       }
 
       .packing-reset-btn {
@@ -3017,6 +3145,74 @@
       }
     ];
 
+    // ---- Birds to Spot — local species the bird-loving David & Paula might catch ----
+    // Matched by day number. London copy stays in sync with mom-dad/index.html.
+    const birds = [
+      {
+        id: 'tower-raven',
+        name: 'Raven',
+        emoji: '🐦\u200d⬛',
+        where: 'Tower of London grounds',
+        blurb: "At least seven live at the Tower full-time, tended by the Yeoman Ravenmaster — London's most famous corvids.",
+        funFact: "Legend says if the ravens ever leave, the Tower crumbles and the kingdom falls — so one wing gets a discreet trim, just in case.",
+        dayNumbers: [22]
+      },
+      {
+        id: 'great-white-pelican',
+        name: 'Great White Pelican',
+        emoji: '🪿',
+        where: "St James's Park — Duck Island, east end of the lake",
+        blurb: "Yes, pelicans, in the middle of London. A gift from the Russian ambassador to Charles II in 1664, and the colony's been there ever since.",
+        funFact: "They're fed fresh fish by the park keepers around 2:30pm. Your walk through the park is just before feeding time — linger on the blue bridge for ten minutes and you might catch the feast.",
+        dayNumbers: [23]
+      },
+      {
+        id: 'common-kingfisher',
+        name: 'Common Kingfisher',
+        emoji: '💎',
+        where: "St James's Park lake edges, reedy corners",
+        blurb: "Watch for a streak of electric blue — a kingfisher perched and head-bobbing to judge depth before plunging for a stickleback. Resident here but elusive; spotting one is a reward, not a promise.",
+        funFact: "The \"common\" in the name is doing a lot of work — sightings still feel like a small miracle.",
+        dayNumbers: [25]
+      },
+      {
+        id: 'peregrine-falcon',
+        name: 'Peregrine Falcon',
+        emoji: '🦅',
+        where: 'Canary Wharf towers (around mile 18 of the marathon route)',
+        blurb: "Look up at Canary Wharf around mile 18 — peregrines hunt these canyons at over 200 mph in a stoop. They don't nest here (they prefer Tate Modern, Battersea, and Parliament) but the towers are a favourite hunting perch.",
+        funFact: "London's peregrines are a comeback story — around 30 breeding pairs now, rivalling the entire Lake District.",
+        dayNumbers: [26]
+      },
+      {
+        id: 'rose-ringed-parakeet',
+        name: 'Rose-ringed Parakeet',
+        emoji: '🦜',
+        where: 'Kensington Gardens canopy',
+        blurb: "London's rowdy green invaders — listen for the screech before you see them flashing through the canopy. Kensington Gardens is parakeet HQ, year-round.",
+        funFact: "Legend blames escapees from the 1951 set of The African Queen, or a pair released by Jimi Hendrix on Carnaby Street. Both stories are almost certainly nonsense — wild parakeets have been spotted in Britain since the 1860s.",
+        dayNumbers: [27]
+      },
+      {
+        id: 'mute-swan',
+        name: 'Mute Swan',
+        emoji: '🦢',
+        where: 'The Round Pond, Kensington Gardens',
+        blurb: "Big, white, deeply unimpressed by tourists. Every unmarked mute swan on open water in England and Wales technically belongs to the King (shared on the Thames with the Vintners' and Dyers' livery companies).",
+        funFact: "The annual \"Swan Upping\" ceremony still rounds them up every July for a royal headcount, in skiffs.",
+        dayNumbers: [27]
+      },
+      {
+        id: 'grey-heron',
+        name: 'Grey Heron',
+        emoji: '🪶',
+        where: 'Thames embankments and the South Bank',
+        blurb: "Tall, grey, and statue-still in the shallows. London has a healthy resident population that doesn't mind the city at all.",
+        funFact: "Grey herons commute — pairs nest in Regent's Park and Battersea Park (two of Europe's most urban heronries), then fly out to the Thames, the Serpentine, and the canals to fish.",
+        dayNumbers: [28]
+      }
+    ];
+
     // Checklist persistence
     function getCheckedItems() {
       try { return JSON.parse(localStorage.getItem('london2026-checked') || '{}'); }
@@ -3042,6 +3238,79 @@
           cb.nextElementSibling.style.textDecoration = cb.checked ? 'line-through' : 'none';
         });
       });
+    }
+
+    // ---- Birds to Spot — Resources section ----
+    function getBirdsSpotted() {
+      try { return JSON.parse(localStorage.getItem('birds-dp-spotted') || '[]'); }
+      catch { return []; }
+    }
+
+    function saveBirdsSpotted(spotted) {
+      try { localStorage.setItem('birds-dp-spotted', JSON.stringify(spotted)); }
+      catch {}
+    }
+
+    function updateBirdCounter() {
+      const counterEl = document.querySelector('.birds-resource-counter');
+      if (!counterEl) return;
+      const spotted = getBirdsSpotted();
+      counterEl.textContent = `${spotted.length} of ${birds.length} spotted`;
+    }
+
+    function renderBirdsResources() {
+      const container = document.getElementById('resourcesSection');
+      if (!container) return;
+      // Avoid double-injection on hot reload
+      if (container.querySelector('.bird-resource-row')) return;
+
+      const group = document.createElement('div');
+      group.className = 'resource-group';
+      group.innerHTML = `
+        <div class="resource-group-header birds-header">
+          <span>🐦</span>
+          <span>Birds to Spot</span>
+          <span class="birds-resource-counter">0 of ${birds.length} spotted</span>
+        </div>
+        ${birds.map(b => `
+          <div class="bird-resource-row" data-bird-id="${b.id}">
+            <input type="checkbox" id="bird-chk-${b.id}">
+            <div class="bird-content">
+              <div class="bird-entry-name">${b.emoji} ${b.name}</div>
+              <div class="bird-entry-blurb">${b.blurb}</div>
+              <div class="bird-entry-where">${b.where}</div>
+              <div class="bird-fun-fact">${b.funFact}</div>
+            </div>
+          </div>
+        `).join('')}
+      `;
+      container.appendChild(group);
+    }
+
+    function setupBirdsChecklist() {
+      const spotted = getBirdsSpotted();
+      document.querySelectorAll('.bird-resource-row').forEach(row => {
+        const id = row.dataset.birdId;
+        const cb = row.querySelector('input[type="checkbox"]');
+        if (spotted.includes(id)) {
+          cb.checked = true;
+          row.classList.add('spotted');
+        }
+        cb.addEventListener('change', () => {
+          const current = getBirdsSpotted();
+          if (cb.checked) {
+            if (!current.includes(id)) current.push(id);
+            row.classList.add('spotted');
+          } else {
+            const i = current.indexOf(id);
+            if (i >= 0) current.splice(i, 1);
+            row.classList.remove('spotted');
+          }
+          saveBirdsSpotted(current);
+          updateBirdCounter();
+        });
+      });
+      updateBirdCounter();
     }
 
     // Initialize
@@ -3118,6 +3387,8 @@
     function init() {
       renderDayCards();
       setupChecklists();
+      renderBirdsResources();
+      setupBirdsChecklist();
       initPackingList();
       setupEventListeners();
       registerServiceWorker();
@@ -3161,6 +3432,28 @@
                 </div>
               </div>
             ` : ''}
+            ${(() => {
+              const dayBirds = birds.filter(b => b.dayNumbers.includes(day.number));
+              if (dayBirds.length === 0) return '';
+              return `
+                <div class="birds-chip" data-day="${day.number}">
+                  <div class="birds-chip-header" onclick="toggleBirdsChip(${day.number})">
+                    <span>🐦</span>
+                    <span>Birds nearby (${dayBirds.length})</span>
+                    <span class="chevron">▼</span>
+                  </div>
+                  <div class="birds-chip-body">
+                    ${dayBirds.map(b => `
+                      <div class="bird-entry">
+                        <div class="bird-entry-name">${b.emoji} ${b.name}</div>
+                        <div class="bird-entry-blurb">${b.blurb}</div>
+                        <div class="bird-entry-where">${b.where}</div>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              `;
+            })()}
             <div class="stop-list">
               <div class="stop-connector"></div>
               ${day.stops.map((stop, idx) => `
@@ -3236,6 +3529,24 @@
         }
       }
     }
+
+    // Birds chip — toggle expand/collapse
+    function toggleBirdsChip(dayNumber) {
+      const chip = document.querySelector(`.birds-chip[data-day="${dayNumber}"]`);
+      if (chip) chip.classList.toggle('expanded');
+    }
+
+    // One-time validation: warn if any bird references a day number not in dayData
+    (function validateBirdDayNumbers() {
+      const validDays = new Set(dayData.map(d => d.number));
+      birds.forEach(b => {
+        b.dayNumbers.forEach(n => {
+          if (!validDays.has(n)) {
+            console.warn(`[birds] "${b.name}" references day ${n}, which is not in dayData.`);
+          }
+        });
+      });
+    })();
 
     // Get transport step icon
     function getStepIcon(iconType) {
