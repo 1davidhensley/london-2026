@@ -765,9 +765,25 @@
       padding: 0.75rem 1.25rem;
       font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
       font-size: 1rem;
+      cursor: pointer;
+      user-select: none;
       display: flex;
+      justify-content: space-between;
       align-items: center;
       gap: 0.5rem;
+    }
+
+    .resource-group-header .toggle-arrow {
+      transition: transform 0.3s ease;
+      font-size: 0.8rem;
+    }
+
+    .resource-group.collapsed .toggle-arrow {
+      transform: rotate(-90deg);
+    }
+
+    .resource-group.collapsed .resource-group-content {
+      display: none;
     }
 
     .resource-item {
@@ -1797,7 +1813,8 @@
   <button class="flight-bar-toggle" id="flightToggle">✈️ Flight Info</button>
 
   <div class="day-pills" id="dayPills">
-    <button class="day-pill active" data-day="21">Tue 21</button>
+    <button class="day-pill active" data-view="all">All Days</button>
+    <button class="day-pill" data-day="21">Tue 21</button>
     <button class="day-pill" data-day="22">Wed 22</button>
     <button class="day-pill" data-day="23">Thu 23</button>
     <button class="day-pill" data-day="24">Fri 24</button>
@@ -1814,7 +1831,8 @@
   <section class="resources-section" id="resourcesSection">
     <!-- Emergency & Medical -->
     <div class="resource-group">
-      <div class="resource-group-header">🚨 Emergency & Medical</div>
+      <div class="resource-group-header">🚨 Emergency & Medical <span class="toggle-arrow">▼</span></div>
+      <div class="resource-group-content">
       <div class="resource-item">
         <span class="resource-item-icon">🆘</span>
         <div class="resource-item-content">
@@ -1854,10 +1872,12 @@
         </div>
       </div>
     </div>
+    </div>
 
     <!-- Transportation -->
     <div class="resource-group">
-      <div class="resource-group-header">🚕 Transportation</div>
+      <div class="resource-group-header">🚕 Transportation <span class="toggle-arrow">▼</span></div>
+      <div class="resource-group-content">
       <div class="resource-item">
         <span class="resource-item-icon">📱</span>
         <div class="resource-item-content">
@@ -1894,10 +1914,12 @@
         </div>
       </div>
     </div>
+    </div>
 
     <!-- Marathon -->
     <div class="resource-group">
-      <div class="resource-group-header">🏅 London Marathon</div>
+      <div class="resource-group-header">🏅 London Marathon <span class="toggle-arrow">▼</span></div>
+      <div class="resource-group-content">
       <div class="resource-item">
         <span class="resource-item-icon">🏃</span>
         <div class="resource-item-content">
@@ -1934,10 +1956,12 @@
         </div>
       </div>
     </div>
+    </div>
 
     <!-- Attractions & Venues -->
     <div class="resource-group">
-      <div class="resource-group-header">🏰 Attractions & Venues</div>
+      <div class="resource-group-header">🏰 Attractions & Venues <span class="toggle-arrow">▼</span></div>
+      <div class="resource-group-content">
       <div class="resource-item">
         <span class="resource-item-icon">🗼</span>
         <div class="resource-item-content">
@@ -2001,10 +2025,12 @@
         </div>
       </div>
     </div>
+    </div>
 
     <!-- Food & Dining -->
     <div class="resource-group">
-      <div class="resource-group-header">🍽 Food & Dining</div>
+      <div class="resource-group-header">🍽 Food & Dining <span class="toggle-arrow">▼</span></div>
+      <div class="resource-group-content">
       <div class="resource-item">
         <span class="resource-item-icon">🍔</span>
         <div class="resource-item-content">
@@ -2034,10 +2060,12 @@
         </div>
       </div>
     </div>
+    </div>
 
     <!-- Shopping & Bookshops -->
     <div class="resource-group">
-      <div class="resource-group-header">📚 Shopping & Bookshops</div>
+      <div class="resource-group-header">📚 Shopping & Bookshops <span class="toggle-arrow">▼</span></div>
+      <div class="resource-group-content">
       <div class="resource-item">
         <span class="resource-item-icon">📖</span>
         <div class="resource-item-content">
@@ -2060,10 +2088,12 @@
         </div>
       </div>
     </div>
+    </div>
 
     <!-- Useful Numbers & Info -->
     <div class="resource-group">
-      <div class="resource-group-header">📞 Useful Info</div>
+      <div class="resource-group-header">📞 Useful Info <span class="toggle-arrow">▼</span></div>
+      <div class="resource-group-content">
       <div class="resource-item">
         <span class="resource-item-icon">📱</span>
         <div class="resource-item-content">
@@ -2107,10 +2137,12 @@
         </div>
       </div>
     </div>
+    </div>
 
     <!-- Family Contacts -->
     <div class="resource-group">
-      <div class="resource-group-header">👨‍👩‍👦‍👦 Family Contacts</div>
+      <div class="resource-group-header">👨‍👩‍👦‍👦 Family Contacts <span class="toggle-arrow">▼</span></div>
+      <div class="resource-group-content">
       <div class="resource-item">
         <span class="resource-item-icon">👫</span>
         <div class="resource-item-content">
@@ -2131,6 +2163,7 @@
           <div class="resource-item-name"><a href="https://maps.google.com/?q=hub+by+Premier+Inn+London+Soho" target="_blank">Hub Premier Inn, Soho</a></div>
           <div class="resource-item-detail">Shared hotel Apr 25–30 — everyone in London together</div>
         </div>
+      </div>
       </div>
     </div>
   </section>
@@ -3276,7 +3309,9 @@
           <span>🐦</span>
           <span>Birds to Spot</span>
           <span class="birds-resource-counter">0 of ${birds.length} spotted</span>
+          <span class="toggle-arrow">▼</span>
         </div>
+        <div class="resource-group-content">
         ${birds.map(b => `
           <div class="bird-resource-row" data-bird-id="${b.id}">
             <input type="checkbox" id="bird-chk-${b.id}">
@@ -3288,6 +3323,7 @@
             </div>
           </div>
         `).join('')}
+        </div>
       `;
       container.appendChild(group);
     }
@@ -3919,6 +3955,12 @@
 
     // Setup event listeners
     function setupEventListeners() {
+      // Resource group accordion (event delegation for static + dynamic groups)
+      document.getElementById('resourcesSection').addEventListener('click', e => {
+        const header = e.target.closest('.resource-group-header');
+        if (header) header.closest('.resource-group').classList.toggle('collapsed');
+      });
+
       // Day pills (including Resources toggle)
       document.querySelectorAll('.day-pill').forEach(pill => {
         pill.addEventListener('click', () => {
@@ -3931,7 +3973,19 @@
           document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('active'));
           pill.classList.add('active');
 
-          if (view === 'resources') {
+          if (view === 'all') {
+            dayCards.style.display = '';
+            footer.style.display = '';
+            resources.classList.remove('active');
+            packing.classList.remove('active');
+            document.querySelectorAll('.day-card').forEach(card => {
+              card.style.display = '';
+              card.classList.remove('expanded');
+            });
+            const todayCard = document.querySelector('.today-card') || document.querySelector('[data-day="21"]');
+            if (todayCard) todayCard.classList.add('expanded');
+            dayCards.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          } else if (view === 'resources') {
             dayCards.style.display = 'none';
             footer.style.display = 'none';
             packing.classList.remove('active');
@@ -3950,12 +4004,15 @@
             resources.classList.remove('active');
             packing.classList.remove('active');
             const day = parseInt(pill.getAttribute('data-day'));
-            const dayCard = document.querySelector(`[data-day="${day}"]`);
-            if (dayCard) {
-              document.querySelectorAll('.day-card').forEach(card => card.classList.remove('expanded'));
-              dayCard.classList.add('expanded');
-              dayCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+            document.querySelectorAll('.day-card').forEach(card => {
+              if (parseInt(card.getAttribute('data-day')) === day) {
+                card.style.display = '';
+                card.classList.add('expanded');
+              } else {
+                card.style.display = 'none';
+              }
+            });
+            dayCards.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
         });
       });
