@@ -407,3 +407,64 @@ Everything else — id, name, emoji, `where` line, remaining blurb/funFact text 
 - `ARCHITECTURE.md` — new bullet under UI Layer.
 - `DEVELOPMENT.md` — this entry.
 - `docs/superpowers/` — spec, plan, and verification script.
+
+---
+
+## 2026-04-15 — Marathon-morning + LHR T3 travel-day timing
+
+**Why:** David flagged two timing risks. (1) Marathon day (Apr 26) said "Charing Cross *or* London Bridge" with three vague train times — he wanted a single, specific recommendation so he's not making decisions on race morning. (2) Return travel day (Apr 28) sent them to Borough Market until 2:00 pm for a 5:45 pm intl DL0021 departure at LHR T3, with no Heathrow routing, no security/lounge time, and no terminal info — real risk of missing the Virgin Atlantic Clubhouse (or the flight) if the taxi hit traffic.
+
+**Marathon day changes (index.html ~2912–2938):**
+- "Train to Blackheath" stop rewritten. Station pinned to **Charing Cross** (no Tube transfer from Café Royal, simplest luggage-light walk). Primary train is **7:58 Southeastern Dartford via Greenwich service**, backup 8:08. `transportDir` now includes four explicit steps with timestamps: 7:30 walk → 7:58 board → ride → 8:28 exit Blackheath. Added `mapsQuery: 'Charing Cross Station, London'` so the Maps button goes somewhere useful.
+- "Arrive at Blue Assembly Area" moved **9:02 → 8:45** (gives ~100 min pre-Wave-10 at 10:23, vs the old 81 min — meaningful because kitbag-lorry drop closes 30 min pre-wave and toilet queues are notorious). Checklist updated to reference the 10:10 "be in start pen" target explicitly.
+- Caveat left in `details`: "Verify live times on the National Rail app the night before — marathon Sunday usually has extra services." Times are Southeastern's standard Sunday pattern but TfL often runs specials on marathon morning; the app shouldn't pretend otherwise.
+
+**Return travel day changes (index.html ~3163–3180):**
+- Borough Market window compressed **2h 30m → 75 min** with "leave by 12:45" baked into the copy.
+- Removed the vague "2:00 pm Travel back to Hotel Café Royal" stop. Replaced with a 7-stop sequence:
+  - 12:45 Return to Hotel (pick up bags from front desk)
+  - 1:30 Taxi to LHR T3 (with transportDir, 60–75 min buffer, explicit "Terminal 3 Departures" drop point)
+  - 2:45 LHR T3 bag drop + Fast Track security
+  - 3:15 Virgin Atlantic Clubhouse (Delta partner lounge at T3, accessed via Delta One / SkyPriority boarding pass)
+  - 5:00 Head to gate (T3 gates can be a 10–15 min walk)
+  - 5:45 DL0021 departs (kept as-is)
+- Final schedule lands them at LHR exactly 3 hr pre-departure — standard for intl Delta One out of LHR — with ~1h 45m of Clubhouse dwell before gate call.
+
+**Confirmed with user before editing:** Charing Cross (walk) over London Bridge (Tube); Taxi/Uber over Heathrow Express or Elizabeth Line (luggage-friendly, door-to-door after a 5-hour sightseeing morning); Virgin Atlantic Clubhouse access via Delta One/SkyPriority; Paula's marathon-day route already handled separately (not edited).
+
+**Files touched:**
+- `index.html` — two block edits in `dayData` (marathon day + return travel day). No renderer changes needed; existing `transportDir` / `mapsQuery` / `checklist` patterns cover everything.
+- `sw.js` — cache v14 → v15.
+- `mom-dad/` — untouched (changes are D&P-specific: David's marathon, David & Paula's flight home).
+- `DEVELOPMENT.md` — this entry.
+
+**Offline:** No new cached assets, no new network calls. Offline-safe by construction.
+
+---
+
+### Session 14 — April 15, 2026 — Marathon Day Spectator Plan + TCS-validated Timing
+
+**What:** Replaced the generic "Spectator Viewing Spots" stop on marathon day with a concrete spectator plan showing estimated passing times at Tower Bridge and Victoria Embankment. Paula + David's parents will spectate together at both locations.
+
+**Time estimates** (Wave 10 start 10:23 AM, ~9:09/mi pace for 4hr target):
+- Tower Bridge (Mile 12) — David passes ~12:15 PM, arrive by noon
+- Victoria Embankment (Mile 24-25) — David passes ~2:05 PM, head over after Tower Bridge
+- The Mall / Finish — ~2:25 PM
+
+**Both apps updated:**
+- `index.html` — replaced generic spectator stop (~line 2953) with timed spectator plan including ±15 min caveat and TCS app tracking note (bib #60613).
+- `mom-dad/index.html` — replaced vague "Morning: cheer on David!" / "Afternoon: Marathon continues" events with three timed spectator stops (Tower Bridge ~12:00 PM, Embankment ~1:45 PM, Finish ~2:25 PM) with Maps links.
+- `sw.js` — cache v15 → v16.
+- `mom-dad/sw.js` — cache v4 → v5.
+
+**Train timing validated against TCS official guidance.** Cross-checked David's morning transport against the April 2 "Participant Event Guide and Start info" email from TCS. Official guidance for bib #60613 / Wave 10:
+- Train arrival at Blackheath: **08:42 / 08:47 / 08:53**
+- Arrival time at the Start: **09:02**
+
+Previous plan had the 7:58 Charing Cross → 8:28 Blackheath → 8:45 Assembly, which was ~17 min earlier than TCS recommends. Updated the Marathon Day transport stop to match official guidance:
+- Departure: 7:55 from Café Royal (was 7:30)
+- Train: 8:18 Charing Cross → 8:42 Blackheath, backups 8:23 / 8:28 (was 7:58 / 8:08)
+- Assembly arrival: 9:02 AM (was 8:45)
+- Walk from Blackheath to Assembly: ~20 min (was "10 min" — corrected to match TCS's 9-min gap between 8:53 train arrival and 9:02 Start arrival, accounting for slower recommended trains)
+
+Less time standing in cold pre-race, still aligned with David's personal "at the line by 9 AM" target.

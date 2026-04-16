@@ -2910,30 +2910,32 @@
             ]
           },
           {
-            time: '8:42 am',
+            time: '8:18 am',
             emoji: '🚂',
-            name: 'Train to Blackheath',
-            details: 'FREE travel — show bib, do NOT tap in/out at any station. Train options: 08:42 / 08:47 / 08:53. Southeastern trains from London stations.',
+            name: 'Train to Blackheath (Southeastern from Charing Cross)',
+            details: 'FREE travel — show bib, do NOT tap in/out at any station. TCS official guidance: target Blackheath arrival at 08:42, 08:47, or 08:53. Primary: 8:18 Charing Cross → 8:42 Blackheath (backups 8:23 or 8:28). Verify live times on the National Rail app the night before — marathon Sunday usually has extra services.',
+            mapsQuery: 'Charing Cross Station, London',
             transportDir: {
-              name: 'Morning — Hotel → Blackheath',
+              name: 'Morning — Hotel Café Royal → Blackheath',
               steps: [
-                { icon: 'Walk', text: 'Walk to Charing Cross or London Bridge station' },
-                { icon: 'Board', text: 'Board Southeastern train to Blackheath' },
-                { icon: 'Exit', text: 'Exit at Blackheath — 10 min walk to Blue Assembly Area' }
+                { icon: 'Walk', text: '7:55 — Leave Café Royal, walk to Charing Cross (~15 min via Piccadilly + Trafalgar Sq)' },
+                { icon: 'Board', text: '8:18 — Board Southeastern Dartford via Greenwich service to Blackheath (backup 8:23 or 8:28)' },
+                { icon: 'Ride', text: 'Ride ~24 min — stops at Waterloo East, London Bridge, then direct to Blackheath' },
+                { icon: 'Exit', text: '8:42 — Exit Blackheath (TCS recommended arrival window 8:42–8:53), ~20-min walk uphill to Blue Assembly Area' }
               ],
-              time: 'Arrive by 09:02'
+              time: 'Arrive Blue Assembly by 9:02 (per TCS official guidance)'
             }
           },
           {
             time: '9:02 am',
             emoji: '🔵',
             name: 'Arrive at Blue Assembly Area',
-            details: 'Drop kitbag at lorry matching bib number. Use toilets. Donate unwanted layers at collection points near Start Line.',
+            details: 'TCS official target arrival time. Drop kitbag at lorry matching bib number — lorry drop closes ~30 min before your wave (~9:53). Toilet queues can be long — budget 20 min. Donate unwanted layers at collection points near Start Line.',
             checklist: [
               'Drop kitbag at correct lorry',
-              'Use toilets',
+              'Use toilets (budget 20 min)',
               'Hydrate at Water Refill Station',
-              'Head to Blue Start Line before 10:23'
+              'Head to Blue Start pen by 10:10 — Wave 10 starts 10:23'
             ]
           },
           {
@@ -2950,9 +2952,9 @@
           },
           {
             time: '—',
-            emoji: '📍',
-            name: 'Spectator Viewing Spots',
-            details: 'Cutty Sark (Mile 6) · Tower Bridge (Mile 12/13) · Canary Wharf (Mile 17-19) · Victoria Embankment (Mile 24/25) · The Mall / Buckingham Palace (Finish!)'
+            emoji: '👀',
+            name: 'Spectator Plan — Tower Bridge & Embankment',
+            details: 'Based on 4hr target (Wave 10 start 10:23 AM, ~9:09/mi pace):\n\n📍 Tower Bridge (Mile 12) — David passes ~12:15 PM → Arrive by noon\n📍 Victoria Embankment (Mile 24-25) — David passes ~2:05 PM → Head over after Tower Bridge\n🏁 The Mall / Finish — ~2:25 PM\n\nPaula + Mom & Dad spectating together. Track David live in the TCS London Marathon app (bib #60613). Times are estimates — allow ±15 min.'
           },
           {
             time: '—',
@@ -3164,13 +3166,55 @@
             emoji: '🥩',
             name: 'Borough Market',
             link: 'https://www.boroughmarket.org.uk',
-            details: 'Eat and browse for 2–2.5 hours'
+            details: 'Eat and browse ~75 min — leave by 12:45 to stay on the flight timeline.',
+            walkTo: 'Walk + Jubilee/Bakerloo back to Piccadilly Circus (~25 min)'
           },
           {
-            time: '2:00 pm',
-            emoji: '🚗',
-            name: 'Travel back to Hotel Café Royal',
-            details: ''
+            time: '12:45 pm',
+            emoji: '🚇',
+            name: 'Return to Hotel Café Royal',
+            details: 'Pick up luggage from front desk, freshen up, final bathroom stop.',
+            mapsQuery: 'Hotel Cafe Royal London'
+          },
+          {
+            time: '1:30 pm',
+            emoji: '🚕',
+            name: 'Taxi to LHR Terminal 3',
+            details: 'Delta DL0021 departs Terminal 3. Book Uber/black cab from Café Royal — budget 60–75 min depending on traffic. Have driver drop at "Terminal 3 Departures".',
+            mapsQuery: 'Heathrow Terminal 3 Departures',
+            transportDir: {
+              name: '1:30 pm — Café Royal → LHR T3',
+              steps: [
+                { icon: 'Board', text: '1:30 — Uber/black cab from Café Royal' },
+                { icon: 'Ride', text: 'Ride ~60–75 min — A4/M4 westbound' },
+                { icon: 'Exit', text: '~2:45 — Arrive LHR Terminal 3 Departures' }
+              ],
+              time: '~75 min incl. traffic buffer'
+            }
+          },
+          {
+            time: '2:45 pm',
+            emoji: '🛂',
+            name: 'LHR T3 — Bag Drop + Fast Track Security',
+            details: 'Delta One / SkyPriority bag drop + Fast Track security lane (shown on boarding pass). Aim to clear security by 3:15.',
+            checklist: [
+              'Passports + boarding passes ready',
+              'Liquids/electronics out for screening',
+              'Head to Virgin Atlantic Clubhouse after security'
+            ]
+          },
+          {
+            time: '3:15 pm',
+            emoji: '🥂',
+            name: 'Virgin Atlantic Clubhouse — T3',
+            link: 'https://www.virginatlantic.com/gb/en/flying-with-us/our-lounges/heathrow-clubhouse.html',
+            details: 'Delta\'s partner lounge at LHR T3 (accessible with Delta One or SkyPriority boarding pass). Food, drinks, showers. Watch the flight info boards — head to gate when called (~5:00 pm).'
+          },
+          {
+            time: '5:00 pm',
+            emoji: '🚶',
+            name: 'Head to Gate',
+            details: 'Walk to gate (T3 gates can be a 10–15 min walk — check boarding pass for gate number). Boarding typically opens 45 min before departure.'
           },
           {
             time: '5:45 pm',
