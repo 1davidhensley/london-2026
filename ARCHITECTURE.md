@@ -46,6 +46,10 @@ Single-file PWA containing all markup, styles, and logic. Key UI components:
 - **Collapsible flight bar** — auto-hides mid-trip, toggle to show/hide
 - **Back to top button** — floating button appears on scroll for quick navigation
 - **Timeline connector** — visual progress dots between stops within each day
+- **Travel & Stays card** — collapsible Resources group rendered from a `travelData` constant (flights, confirmation number, hotel address/phone/check-in/check-out). Phone is a `tel:` link, address is a Google Maps link.
+- **Marathon Day "Race Mode" banner** — pinned full-width banner at the top of the page that activates only when the local date is 2026-04-26. Live 1-second countdown to Wave 10 start (10:23 AM); flips to "race in progress" then to spectator-timing reminders as the day progresses. Dismissible via sessionStorage.
+- **Now-stop highlighting** — during the trip, renders a `📍 Now` badge on the stop whose `time` is nearest the current clock (re-evaluated every 5 min and on visibility change).
+- **App version label** — footer shows `App version: vN ✓` when the installed service-worker cache matches the deployed `CACHE_NAME`, or `Installed: vN · Latest: vM — fully close and reopen the app to update` (in marathon orange) when the PWA is stale. Lets non-technical users self-diagnose PWA cache staleness.
 
 ### 2. Service Worker (`sw.js`)
 Handles offline caching strategy:
@@ -114,8 +118,12 @@ London Trip App/
 │   └── churchill-war-rooms.pdf
 ├── ARCHITECTURE.md     # This file
 ├── DEVELOPMENT.md      # Development roadmap and session log
+├── DEPLOY.md           # Non-technical deploy walkthrough
+├── CLAUDE.md           # Guidance for Claude Code working in this repo
 └── KNOWN-ISSUES.md     # Known issues and follow-ups
 ```
+
+The editing copy lives in OneDrive; the deploy copy (with git remote) lives at `C:\Users\hensl\repos\london-2026` → `1davidhensley/london-2026`. See `DEPLOY.md` for the walkthrough.
 
 ## Key Constraints
 

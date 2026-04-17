@@ -34,3 +34,16 @@
 - **Symptoms:** Paula reported packing list editing didn't work. The code was correct — the stale service worker cache was preventing the updated HTML from loading.
 - **Fix:** Bumped service worker cache version: main app v5→v6, Mom & Dad app v1→v2. This forces the service worker to re-fetch all assets on next load.
 - **Prevention:** Always bump the service worker cache version whenever deploying code changes. Added this as a deployment checklist item.
+
+### 5. Travel & Stays Card Rendering Empty After v17 Deploy
+- **Status:** Fixed (April 16, 2026, v17 → v18)
+- **Root Cause:** `renderTravelCard()` guarded with `if (!grid || !window.travelData) return;`. Top-level `const travelData = {...}` in a classic `<script>` block creates a script-scoped binding — it does NOT attach to `window`. So `window.travelData` was `undefined` and the function exited silently, leaving `#travelGrid` empty.
+- **Symptoms:** Paula reported Travel & Stays section was blank on her phone after the v17 deploy went out. Headless-Chromium test against the live URL confirmed same behavior on v17; after the v18 fix the same test passed end-to-end (3 rows rendered, no page errors).
+- **Fix:** Swapped `!window.travelData` → `typeof travelData === 'undefined'`. Cache v17 → v18.
+- **Prevention (general gotcha):** In classic scripts, only `var` and function declarations attach to `window`. `const`/`let`/`class` at the top level create script-scoped bindings accessible by name, but NOT via `window.name`. If defensive guards reach for `window.foo`, either use `typeof foo` or explicitly write `window.foo = foo`.
+
+### 6. Non-Technical User Couldn't Self-Verify PWA Cache Version
+- **Status:** Fixed (April 16, 2026, v18 → v19)
+- **Root Cause:** After deploying v17 → v18 to fix the Travel & Stays empty rendering, Paula's phone still showed it blank. Root cause: iOS PWA cache was still on the old version; the live code was correct. But without a way to see the installed cache version on the phone, there was no way for her to diagnose the difference between "app code is broken" vs "my phone just hasn't picked up the new code yet" without asking David.
+- **Fix:** Added a self-verifying version label to the footer. Checks the installed cache (`caches.keys()` for highest `london-2026-vN`) and compares to the latest deployed (fetch `./sw.js` and parse `CACHE_NAME`). Shows `App version: v19 ✓` when current, or `Installed: vN · Latest: vM — fully close and reopen the app to update` (in marathon orange) when stale. Graceful fallbacks when offline.
+- **Also delivered:** Emailed David and Paula a plain-English update-instructions guide (iOS "fully close" gesture, Safari fallback, remove-and-readd nuclear option).

@@ -501,3 +501,14 @@ Tel link on hotel phone, Maps link on hotel address. Flight times differ by ~5 m
 **Post-deploy fix (v17 → v18):** Travel & Stays rendered empty on Paula's deployed phone even though v17 was serving correctly. Cause: `renderTravelCard()` guarded with `if (!grid || !window.travelData) return;`, but top-level `const travelData = {...}` in a classic `<script>` block creates a **script-scoped** binding — it does NOT attach to `window`. So `window.travelData` was always `undefined` and the function returned early. Worked in local tests only because I'd opened DevTools and never hit that code path cleanly. Fix: `typeof travelData === 'undefined'` check instead (direct reference within the same script is fine; the `typeof` guard is just belt-and-braces). Cache v17 → v18.
 
 **Gotcha to remember:** in classic (non-module) scripts, only `var` declarations and function declarations attach to `window`. `const`, `let`, and `class` at the top level create script-scoped bindings you can reference by name but NOT via `window.name`. Easy trap when adding defensive guards. If you need a window-level global, write `window.foo = foo` explicitly, or use `var`.
+
+**App version label (v18 → v19):** Paula's phone continued showing an empty Travel & Stays on v18, so ran a headless-Chromium test against the live URL to rule out a code bug — test PASSED end-to-end (all 3 rows rendered, `travelData` + `renderTravelCard` both defined, service worker serving v18, zero page errors). Root cause confirmed as stale PWA cache on the phone, not deployed code.
+
+Added a self-verifying version label to the footer (`#versionTag`) that compares the installed cache (from `caches.keys()`, looking for the highest `london-2026-vN`) against the latest deployed version (fetched live from `./sw.js`). Displays:
+- `App version: v19 ✓` when installed == latest,
+- `Installed: v17 · Latest: v19 — fully close and reopen the app to update` (in `--marathon-red`) when installed < latest,
+- Graceful fallbacks when offline or when caches API is unavailable.
+
+Rationale: non-technical users shouldn't have to ping me to know whether their phone picked up the latest code. A footer line makes it one-scroll to self-diagnose. Cache v18 → v19 so the fix itself propagates.
+
+Also emailed David and Paula a plain-English update-instructions guide (draft in David's Gmail, covers the iOS "fully close" gesture for both home-button and Face-ID phones, Safari fallback, and the nuclear remove-and-readd).
