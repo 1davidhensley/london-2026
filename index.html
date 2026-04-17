@@ -2377,7 +2377,7 @@
   <!-- Footer -->
   <footer class="app-footer" id="appFooter">
     London 2026 Trip Guide · David & Paula<br>
-    <span class="version-tag">Last updated: March 29, 2026</span>
+    <span class="version-tag" id="versionTag">App version: loading…</span>
   </footer>
 
   <script>
@@ -3678,6 +3678,55 @@
       initTodayFocus();
       // Session 15 — race-day banner
       initRaceMode();
+      // Session 15 — version label in footer
+      updateVersionTag();
+    }
+
+    // Session 15 — show installed cache version vs latest deployed, so the
+    // user can visually tell whether the phone's PWA is up to date.
+    async function updateVersionTag() {
+      const el = document.getElementById('versionTag');
+      if (!el) return;
+      const parseVer = s => {
+        const m = s && s.match(/v(\d+)/);
+        return m ? parseInt(m[1], 10) : null;
+      };
+      try {
+        // What cache is currently active on this device?
+        let installed = null;
+        if ('caches' in window) {
+          const keys = await caches.keys();
+          const match = keys.filter(k => k.startsWith('london-2026-'))
+            .sort((a, b) => (parseVer(b) || 0) - (parseVer(a) || 0))[0];
+          if (match) installed = match.replace('london-2026-', '');
+        }
+        // What's the latest deployed version (from server)?
+        let latest = null;
+        try {
+          const r = await fetch('./sw.js?nocache=' + Date.now(), { cache: 'no-store' });
+          if (r.ok) {
+            const text = await r.text();
+            const m = text.match(/CACHE_NAME\s*=\s*'london-2026-(v\d+)'/);
+            if (m) latest = m[1];
+          }
+        } catch (e) { /* offline — that's fine */ }
+
+        if (installed && latest && installed === latest) {
+          el.textContent = `App version: ${installed} ✓`;
+          el.style.color = '';
+        } else if (installed && latest && parseVer(installed) < parseVer(latest)) {
+          el.textContent = `Installed: ${installed} · Latest: ${latest} — fully close and reopen the app to update`;
+          el.style.color = 'var(--marathon-red)';
+        } else if (installed) {
+          el.textContent = `App version: ${installed}`;
+        } else if (latest) {
+          el.textContent = `App version: ${latest} (not yet cached — offline access will be ready after first reload)`;
+        } else {
+          el.textContent = 'App version: unknown';
+        }
+      } catch (e) {
+        el.textContent = 'App version: unknown';
+      }
     }
 
     // Session 15 — Now-stop + today auto-scroll
