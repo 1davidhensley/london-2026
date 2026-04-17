@@ -1776,7 +1776,149 @@
       .packing-edit-btn:hover {
         background: var(--card);
       }
+
+      /* Session 15 — dark mode overrides */
+      .stop.now {
+        background: rgba(212, 162, 83, 0.12);
+      }
+      .travel-row {
+        background: #252525;
+      }
     }
+
+    /* Session 15 — Now badge, Travel & Stays, Race Mode */
+    .stop.now {
+      border-left-color: var(--accent);
+      background: rgba(192, 125, 62, 0.08);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+    .stop.now::after {
+      content: '📍 Now';
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.15rem 0.5rem;
+      border-radius: 10px;
+      letter-spacing: 0.02em;
+    }
+
+    /* Travel & Stays resource group */
+    .travel-grid {
+      display: grid;
+      gap: 0.75rem;
+    }
+    .travel-row {
+      padding: 0.75rem 0.9rem;
+      background: var(--bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+    }
+    .travel-row-title {
+      font-weight: 600;
+      color: var(--primary);
+      font-size: 0.9rem;
+      margin-bottom: 0.25rem;
+    }
+    .travel-row-body {
+      font-size: 0.85rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .travel-row-body .muted {
+      color: var(--text-dim);
+      font-size: 0.8rem;
+    }
+    .travel-row-body a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .travel-row-body a:hover {
+      text-decoration: underline;
+    }
+    .travel-row-confirmation {
+      display: inline-block;
+      margin-top: 0.35rem;
+      padding: 0.15rem 0.5rem;
+      background: rgba(58, 124, 165, 0.12);
+      color: var(--tag-ticket);
+      border-radius: 6px;
+      font-family: 'SF Mono', Menlo, Consolas, monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.03em;
+    }
+
+    /* Race Mode banner */
+    .race-mode-banner {
+      background: linear-gradient(135deg, var(--marathon-red) 0%, #f09030 100%);
+      color: #fff;
+      padding: 1rem 1.25rem;
+      border-bottom: 2px solid #b36300;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(224, 120, 0, 0.25);
+    }
+    .race-mode-banner[hidden] { display: none; }
+    .race-mode-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .race-mode-countdown {
+      font-size: 1.5rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.5rem;
+    }
+    .race-mode-subtitle {
+      font-size: 0.8rem;
+      opacity: 0.95;
+      margin-bottom: 0.6rem;
+    }
+    .race-mode-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.4rem;
+      font-size: 0.78rem;
+    }
+    .race-mode-chip {
+      background: rgba(255, 255, 255, 0.18);
+      padding: 0.3rem 0.55rem;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+    .race-mode-chip strong {
+      display: block;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.85;
+      margin-bottom: 0.1rem;
+    }
+    .race-mode-close {
+      position: absolute;
+      top: 0.4rem;
+      right: 0.5rem;
+      background: rgba(0, 0, 0, 0.15);
+      color: #fff;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      font-size: 1rem;
+      line-height: 1;
+      cursor: pointer;
+      opacity: 0.8;
+    }
+    .race-mode-close:hover { opacity: 1; }
 
     /* Print Styles */
     @media print {
@@ -1799,6 +1941,21 @@
     <h1>London 2026 <span class="flag">🇬🇧</span></h1>
     <p class="subtitle">April 21-28 · Marathon Trip</p>
   </header>
+
+  <div class="race-mode-banner" id="raceModeBanner" hidden>
+    <button class="race-mode-close" id="raceModeClose" aria-label="Dismiss">×</button>
+    <div class="race-mode-title">🏅 Race Day</div>
+    <div class="race-mode-countdown" id="raceModeCountdown">—</div>
+    <div class="race-mode-subtitle" id="raceModeSubtitle">Wave 10 · Blue Start · Bib #60613</div>
+    <div class="race-mode-grid">
+      <div class="race-mode-chip"><strong>Charing Cross</strong>8:18 AM train</div>
+      <div class="race-mode-chip"><strong>Blackheath</strong>8:42 arrival</div>
+      <div class="race-mode-chip"><strong>Blue Assembly</strong>by 9:02 AM</div>
+      <div class="race-mode-chip"><strong>Start pen</strong>by 10:10 AM</div>
+      <div class="race-mode-chip"><strong>Tower Bridge</strong>~12:15 PM (Paula)</div>
+      <div class="race-mode-chip"><strong>Embankment</strong>~2:05 PM (Paula)</div>
+    </div>
+  </div>
 
   <div class="flight-bar" id="flightBar">
     <div class="flight-info">
@@ -1829,6 +1986,14 @@
   <main id="dayCards"></main>
 
   <section class="resources-section" id="resourcesSection">
+    <!-- Travel & Stays (Session 15) -->
+    <div class="resource-group" id="travelStaysGroup">
+      <div class="resource-group-header">✈️ Travel &amp; Stays <span class="toggle-arrow">▼</span></div>
+      <div class="resource-group-content">
+        <div class="travel-grid" id="travelGrid"></div>
+      </div>
+    </div>
+
     <!-- Emergency & Medical -->
     <div class="resource-group">
       <div class="resource-group-header">🚨 Emergency & Medical <span class="toggle-arrow">▼</span></div>
@@ -2216,6 +2381,35 @@
   </footer>
 
   <script>
+    // Session 15 — Travel & Stays data (pulled from email confirmations)
+    const travelData = {
+      outbound: {
+        carrier: 'Delta Air Lines',
+        number: 'DL20',
+        cabin: 'Delta One',
+        depart: { city: 'Seattle (SEA)', datetime: 'Mon Apr 20, 9:45 PM' },
+        arrive: { city: 'London Heathrow (LHR T3)', datetime: 'Tue Apr 21, 3:35 PM' },
+        confirmation: 'JLC9G7'
+      },
+      return: {
+        carrier: 'Delta Air Lines',
+        number: 'DL21',
+        cabin: 'Delta One',
+        depart: { city: 'London Heathrow (LHR T3)', datetime: 'Tue Apr 28, 5:40 PM' },
+        arrive: { city: 'Seattle (SEA)', datetime: 'Tue Apr 28, 7:59 PM' },
+        confirmation: 'JLC9G7'
+      },
+      hotel: {
+        name: 'Hotel Café Royal',
+        address: '68 Regent Street, London, W1B 4DY',
+        mapsQuery: 'Hotel Café Royal, 68 Regent Street, London W1B 4DY',
+        phone: '+44 20 7406 3301',
+        checkIn: 'Tue Apr 21, 2026',
+        checkOut: 'Tue Apr 28, 2026',
+        notes: 'English breakfast included · BMW i7 arrival transfer from LHR T3 · Complimentary Akasha Spa access · 10:00 AM aromatherapy massage booked Mon Apr 27'
+      }
+    };
+
     // Day Data
     const dayData = [
       {
@@ -3217,10 +3411,10 @@
             details: 'Walk to gate (T3 gates can be a 10–15 min walk — check boarding pass for gate number). Boarding typically opens 45 min before departure.'
           },
           {
-            time: '5:45 pm',
+            time: '5:40 pm',
             emoji: '✈️',
             name: 'DL0021 departs LHR',
-            details: '→ SEA arriving 8:04 pm'
+            details: '→ SEA arriving 7:59 pm'
           }
         ],
         transport: []
@@ -3475,10 +3669,168 @@
       renderBirdsResources();
       setupBirdsChecklist();
       initPackingList();
+      renderTravelCard();
       setupEventListeners();
       registerServiceWorker();
       // Fetch live weather (non-blocking — falls back to hardcoded averages if offline)
       fetchWeather();
+      // Session 15 — focus today & highlight current stop
+      initTodayFocus();
+      // Session 15 — race-day banner
+      initRaceMode();
+    }
+
+    // Session 15 — Now-stop + today auto-scroll
+    function tripDayForDate(d) {
+      if (d.getFullYear() !== 2026 || d.getMonth() !== 3) return null;
+      const day = d.getDate();
+      return (day >= 21 && day <= 28) ? day : null;
+    }
+
+    function parseStopTime(timeStr, baseDate) {
+      // Accepts "3:30 pm", "10:23 am", "9:45", "14:30" — returns Date on baseDate or null
+      if (!timeStr || typeof timeStr !== 'string') return null;
+      const m = timeStr.trim().toLowerCase().match(/^(\d{1,2}):(\d{2})\s*(am|pm)?/);
+      if (!m) return null;
+      let hr = parseInt(m[1], 10);
+      const min = parseInt(m[2], 10);
+      const mer = m[3];
+      if (mer === 'pm' && hr < 12) hr += 12;
+      if (mer === 'am' && hr === 12) hr = 0;
+      const out = new Date(baseDate);
+      out.setHours(hr, min, 0, 0);
+      return out;
+    }
+
+    function updateNowBadge() {
+      try {
+        document.querySelectorAll('.stop.now').forEach(el => el.classList.remove('now'));
+        const now = new Date();
+        const dayNum = tripDayForDate(now);
+        if (!dayNum) return;
+        const card = document.querySelector(`.day-card[data-day="${dayNum}"]`);
+        if (!card) return;
+        const day = dayData.find(d => d.number === dayNum);
+        if (!day) return;
+        // Rank stops: most recent past, else first upcoming
+        let pastIdx = -1, upcomingIdx = -1, pastDiff = Infinity, upcomingDiff = Infinity;
+        day.stops.forEach((s, i) => {
+          const t = parseStopTime(s.time, now);
+          if (!t) return;
+          const diff = now - t;
+          if (diff >= 0 && diff < pastDiff) { pastDiff = diff; pastIdx = i; }
+          if (diff < 0 && -diff < upcomingDiff) { upcomingDiff = -diff; upcomingIdx = i; }
+        });
+        const chosen = pastIdx >= 0 ? pastIdx : upcomingIdx;
+        if (chosen < 0) return;
+        const stopEl = card.querySelector(`.stop[data-stop-idx="${chosen}"]`);
+        if (stopEl) stopEl.classList.add('now');
+      } catch (e) {
+        console.warn('[now-badge]', e);
+      }
+    }
+
+    function initTodayFocus() {
+      try {
+        const now = new Date();
+        const dayNum = tripDayForDate(now);
+        if (dayNum) {
+          const card = document.querySelector(`.day-card[data-day="${dayNum}"]`);
+          if (card) {
+            card.classList.add('expanded');
+            // Smooth scroll after layout settles
+            setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+          }
+        }
+        updateNowBadge();
+        // Re-evaluate every 5 min when visible
+        let timer = setInterval(() => {
+          if (document.visibilityState === 'visible') updateNowBadge();
+        }, 5 * 60 * 1000);
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible') updateNowBadge();
+        });
+      } catch (e) {
+        console.warn('[today-focus]', e);
+      }
+    }
+
+    // Session 15 — Travel & Stays renderer
+    function renderTravelCard() {
+      const grid = document.getElementById('travelGrid');
+      if (!grid || !window.travelData) return;
+      const { outbound, return: ret, hotel } = travelData;
+      const flightBlock = (label, f) => `
+        <div class="travel-row">
+          <div class="travel-row-title">${label} · ${f.number} · ${f.cabin}</div>
+          <div class="travel-row-body">
+            ${f.depart.city} · <strong>${f.depart.datetime}</strong><br>
+            → ${f.arrive.city} · <strong>${f.arrive.datetime}</strong>
+            <br><span class="travel-row-confirmation">Conf ${f.confirmation}</span>
+          </div>
+        </div>`;
+      grid.innerHTML = `
+        ${flightBlock('✈️ Outbound', outbound)}
+        ${flightBlock('🛬 Return', ret)}
+        <div class="travel-row">
+          <div class="travel-row-title">🏨 ${hotel.name}</div>
+          <div class="travel-row-body">
+            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(hotel.mapsQuery)}" target="_blank" rel="noopener">${hotel.address}</a><br>
+            <a href="tel:${hotel.phone.replace(/\s/g, '')}">${hotel.phone}</a><br>
+            Check-in: <strong>${hotel.checkIn}</strong> · Check-out: <strong>${hotel.checkOut}</strong>
+            <div class="muted" style="margin-top:0.35rem">${hotel.notes}</div>
+          </div>
+        </div>`;
+    }
+
+    // Session 15 — Race Mode banner
+    function initRaceMode() {
+      try {
+        const banner = document.getElementById('raceModeBanner');
+        if (!banner) return;
+        const now = new Date();
+        const isRaceDay = now.getFullYear() === 2026 && now.getMonth() === 3 && now.getDate() === 26;
+        if (!isRaceDay) return;
+        if (sessionStorage.getItem('raceModeDismissed') === '1') return;
+        banner.hidden = false;
+
+        const startTime = new Date(2026, 3, 26, 10, 23, 0, 0);
+        const countdownEl = document.getElementById('raceModeCountdown');
+        const subtitleEl = document.getElementById('raceModeSubtitle');
+
+        const tick = () => {
+          const n = new Date();
+          const diff = startTime - n;
+          if (diff > 0) {
+            const h = Math.floor(diff / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            const s = Math.floor((diff % 60000) / 1000);
+            countdownEl.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')} to start`;
+            subtitleEl.textContent = 'Wave 10 · Blue Start · Bib #60613';
+          } else {
+            const elapsed = -diff;
+            const mins = Math.floor(elapsed / 60000);
+            if (mins < 30) {
+              countdownEl.textContent = `🏃 Race in progress — go go go!`;
+              subtitleEl.textContent = `Started ${mins} min ago · target ~4h finish`;
+            } else {
+              countdownEl.textContent = `🏃 Running strong`;
+              subtitleEl.textContent = `Tower Bridge ~12:15 PM · Embankment ~2:05 PM · Finish ~2:25 PM`;
+              clearInterval(timerId);
+            }
+          }
+        };
+        tick();
+        const timerId = setInterval(tick, 1000);
+
+        document.getElementById('raceModeClose').addEventListener('click', () => {
+          banner.hidden = true;
+          sessionStorage.setItem('raceModeDismissed', '1');
+          clearInterval(timerId);
+        });
+      } catch (e) {
+        console.warn('[race-mode]', e);
+      }
     }
 
     // Render day cards

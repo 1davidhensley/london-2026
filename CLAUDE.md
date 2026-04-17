@@ -23,7 +23,11 @@ When testing service-worker changes locally, hard-reload (Ctrl+Shift+R) or use D
 
 ## Deployment
 
-Deployment is manual via git push to the respective GitHub repos (the dirs here are thin local repos with no remotes configured — David pushes from a clone elsewhere, typically by grabbing a token with `gh auth token` from `cmd` shell, not PowerShell). GitHub Pages serves from `main`/root.
+See `DEPLOY.md` for the step-by-step walkthrough written for a non-technical user. In short:
+
+- The folder at `C:\Users\hensl\OneDrive\Documents\Claude\Projects\London Trip App` is the **editing copy** and has no working git remote (the `.git` here is a stub).
+- The **deploy copy** lives at `C:\Users\hensl\repos\london-2026` (set up 2026-04-16) and is wired to `1davidhensley/london-2026`. To deploy: copy changed files from the editing copy into the deploy copy, then `git add -A && git commit && git push` from there in `cmd` (not PowerShell; `gh auth token` yields the token if prompted). GitHub Pages serves from `main`/root.
+- The `mom-dad/` app has its own repo at `1davidhensley/london-2026-mom-dad` — when/if a deploy copy is needed, mirror the setup at `C:\Users\hensl\repos\london-2026-mom-dad`.
 
 **Mandatory deployment checklist** (learned the hard way in Session 10 — Paula reported a feature wasn't working because the SW cache was stale):
 

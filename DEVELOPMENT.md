@@ -468,3 +468,32 @@ Previous plan had the 7:58 Charing Cross → 8:28 Blackheath → 8:45 Assembly, 
 - Walk from Blackheath to Assembly: ~20 min (was "10 min" — corrected to match TCS's 9-min gap between 8:53 train arrival and 9:02 Start arrival, accounting for slower recommended trains)
 
 Less time standing in cold pre-race, still aligned with David's personal "at the line by 9 AM" target.
+
+---
+
+### Session 15 — April 16, 2026 — Pre-Trip UX Upgrades (D&P app only)
+
+**What:** Three upgrades landed 5 days before departure, surfacing info the app already had and adding logistical details pulled from confirmation emails. Scope: David & Paula app only — `mom-dad/` untouched this round.
+
+**1. "Today" auto-focus + "Now" badge.** On open, if today's date is within Apr 21–28, the matching day card auto-expands and smooth-scrolls into view. A new `.now` class (accent border + "📍 Now" pill) highlights the stop whose `time` is nearest the current clock — most-recent past if one exists, else first upcoming. Re-evaluates every 5 min while the tab is visible, and on `visibilitychange`. All wrapped in `try/catch` so a stop-time parsing quirk can never break rendering. Existing `today-card` class was preserved; this layers on top.
+
+**2. Travel & Stays resource group.** New `✈️ Travel & Stays` collapsible group at the top of the Resources section. Data lives in a new `travelData` constant (pulled from Delta conf JLC9G7 and Hotel Café Royal concierge thread):
+- Outbound: DL20 · Mon Apr 20 SEA 9:45 PM → LHR 3:35 PM Tue Apr 21 (Delta One)
+- Return: DL21 · Tue Apr 28 LHR 5:40 PM → SEA 7:59 PM (Delta One)
+- Hotel: Hotel Café Royal, 68 Regent Street, London W1B 4DY · +44 20 7406 3301 · check-in Apr 21 / out Apr 28 · English breakfast incl · BMW i7 arrival transfer · Akasha Spa access + 10 AM massage booked Mon Apr 27
+
+Tel link on hotel phone, Maps link on hotel address. Flight times differ by ~5 min from the older `.flight-bar` copy at the top — the new card reflects the latest Delta receipt; left the existing flight-bar untouched to avoid scope creep. The user can reconcile later if desired.
+
+**3. Marathon Day "Race Mode" banner.** New `<div id="raceModeBanner">` pinned between the header and flight-bar. Activates only when local date is 2026-04-26 (and not previously dismissed in this session). Shows a 1-second-updating countdown to 10:23 AM Wave 10 start, then flips to "🏃 Race in progress — go go go!" for the first 30 min, then to a passing-time reminder (Tower Bridge 12:15, Embankment 2:05, Finish 2:25). Chip grid reminds: Charing Cross 8:18 train, Blackheath 8:42 arrival, Blue Assembly by 9:02, Start pen by 10:10. Close button stores dismissal in `sessionStorage` (survives reload but not a new day). Uses `var(--marathon-red)` — no hardcoded colors per the Session 6 rule.
+
+**Files touched:**
+- `index.html` — added `travelData` constant (before `dayData`); added CSS for `.stop.now`, `.travel-*`, `.race-mode-*` (before print styles); added dark-mode overrides inside existing `@media (prefers-color-scheme: dark)`; added Race Mode banner HTML between `<header>` and `.flight-bar`; added `✈️ Travel & Stays` resource group at the top of the Resources section; added `tripDayForDate`, `parseStopTime`, `updateNowBadge`, `initTodayFocus`, `renderTravelCard`, `initRaceMode` functions; wired all three into `init()`.
+- `sw.js` — cache v16 → v17.
+- `mom-dad/` — untouched.
+- `DEVELOPMENT.md` — this entry.
+
+**Offline:** No new cached assets, no new network calls. All data inline; sessionStorage for race-mode dismissal. Offline-safe by construction.
+
+**Verification plan:** Override `Date` via DevTools to each Apr 21–28 day → confirm correct day auto-expands + `.now` badge appears on exactly one stop whose time is nearest to the overridden clock. Override to 2026-04-26 at 07:00 / 09:30 / 10:22 / 10:30 / 13:00 → confirm countdown accuracy and state transitions. Toggle Offline in DevTools → confirm all three features still render. Hard-reload and verify `london-2026-v17` is active in Application → Service Workers.
+
+**Addendum — DL21 time reconciliation (same session):** Checked external schedules after realizing the itinerary day-6 stop showed `5:45 pm → 8:04 pm` while the Delta Jan 8 2026 flight receipt (post-schedule-change, conf JLC9G7) shows `5:40 pm LHR → 7:59 pm SEA`. flightmapper.net's published schedule for the Mar 28–Oct 23, 2026 window shows a different generic evening DL21 (17:25 GMT dep / 19:45 PDT arr), which diverges from the user's ticketed times — this likely reflects a later public schedule that didn't amend ticketed bookings. No schedule-change emails from Delta post-Jan 8 2026. Trusted the Delta receipt; updated the return-day stop in `dayData` to `5:40 pm → 7:59 pm` to match the Travel & Stays card and the ticket. David should still verify on the Fly Delta app the morning of Apr 28 — if Delta has issued a silent revision, the app will show it.
