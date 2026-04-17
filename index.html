@@ -3758,7 +3758,7 @@
     // Session 15 — Travel & Stays renderer
     function renderTravelCard() {
       const grid = document.getElementById('travelGrid');
-      if (!grid || !window.travelData) return;
+      if (!grid || typeof travelData === 'undefined') return;
       const { outbound, return: ret, hotel } = travelData;
       const flightBlock = (label, f) => `
         <div class="travel-row">
