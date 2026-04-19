@@ -1948,8 +1948,8 @@
     <div class="race-mode-countdown" id="raceModeCountdown">—</div>
     <div class="race-mode-subtitle" id="raceModeSubtitle">Wave 10 · Blue Start · Bib #60613</div>
     <div class="race-mode-grid">
-      <div class="race-mode-chip"><strong>Charing Cross</strong>8:18 AM train</div>
-      <div class="race-mode-chip"><strong>Blackheath</strong>8:42 arrival</div>
+      <div class="race-mode-chip"><strong>Charing Cross</strong>8:20 AM train</div>
+      <div class="race-mode-chip"><strong>Blackheath</strong>8:45 arrival</div>
       <div class="race-mode-chip"><strong>Blue Assembly</strong>by 9:02 AM</div>
       <div class="race-mode-chip"><strong>Start pen</strong>by 10:10 AM</div>
       <div class="race-mode-chip"><strong>Tower Bridge</strong>~12:15 PM (Paula)</div>
@@ -3058,14 +3058,16 @@
             time: '8:30 pm',
             emoji: '🌙',
             name: 'Race Prep & Early Night',
-            details: 'Deferral deadline: 23:59 tonight. Lay out kit, pin bib #60613, charge phone, set alarm for 7:30 am. Blackheath trains: 08:42 / 08:47 / 08:53.',
+            details: 'Deferral deadline: 23:59 tonight. Lay out kit, pin bib #60613 (4 corners, front), chip on shoe, fuel in pockets, throwaway layers ready. Charge phone + watch to 100%. Alarm 6:15 am (phone + hotel wake-up call + backup). Primary train 8:20 Charing Cross; backups 8:35 and the 8:18 Dartford-via-Greenwich. Verify live times on National Rail app tonight.',
             checklist: [
-              'Pin bib #60613 to race top',
-              'Lay out race kit + shoes',
-              'Pack kitbag for post-race (snack, warm layer, phone charger)',
-              'Charge phone overnight',
-              'Set alarm — 7:30 am',
-              'Check morning weather forecast'
+              'Pin bib #60613 to race top (4 corners, front)',
+              'Lay out race kit + shoes (chip attached)',
+              'Pre-pack race bag: fuel, throwaway layers, kitbag for post-race',
+              'Charge phone + watch overnight',
+              'Set alarm — 6:15 am (+ hotel wake-up call + backup alarm)',
+              'Book room service for ~6:25 am (45-min lead → arrives 7:10)',
+              'Check morning weather forecast',
+              'Verify 8:20 Charing Cross → Blackheath on National Rail app'
             ]
           }
         ],
@@ -3104,32 +3106,51 @@
             ]
           },
           {
-            time: '8:18 am',
+            time: '6:15 am',
+            emoji: '⏰',
+            name: 'Pre-Race Morning Routine — Hotel Café Royal',
+            details: 'Minute-by-minute plan (from the email sent to Paula, Apr 18). The Red Bull → breakfast → final bathroom sequence is timed so the caffeine bathroom window lands BEFORE leaving the hotel, not on the train. Race bag, bib (4 corners, front), chip on shoe, fuel, and throwaway layers all laid out Saturday night — Sunday morning is grab-and-go.',
+            checklist: [
+              '6:15 — Wake (phone alarm + hotel wake-up call + backup alarm)',
+              '6:15–6:25 — Hydrate, bathroom, light stretch',
+              '6:25 — Order room service (45-min lead → arrives ~7:10)',
+              '6:25–6:55 — Buffer: relax, review plan, coffee',
+              '6:55 — Drink Red Bull (starts 1-hour bathroom timer)',
+              '6:55–7:10 — Final mental prep',
+              '7:10–7:40 — Breakfast (finishes 2hr 43min before wave)',
+              '7:40–7:55 — Get dressed in race kit',
+              '7:55 — Final bathroom stop (Red Bull timing lines up)',
+              '7:55–8:00 — Throwaway warm layers on, grab pre-packed race bag',
+              '8:00 — Leave hotel lobby'
+            ]
+          },
+          {
+            time: '8:20 am',
             emoji: '🚂',
             name: 'Train to Blackheath (Southeastern from Charing Cross)',
-            details: 'FREE travel — show bib, do NOT tap in/out at any station. TCS official guidance: target Blackheath arrival at 08:42, 08:47, or 08:53. Primary: 8:18 Charing Cross → 8:42 Blackheath (backups 8:23 or 8:28). Verify live times on the National Rail app the night before — marathon Sunday usually has extra services.',
+            details: 'FREE travel — show bib, do NOT tap in/out at any station. TCS official guidance: target Blackheath arrival between 08:42 and 08:53. Primary plan (per email to Paula Apr 18): 8:20 Charing Cross → ~8:45 Blackheath. Backup: 8:35 from Charing Cross (still within TCS window). Also running: 8:18 Dartford-via-Greenwich → 8:42 Blackheath (stops at Waterloo East + London Bridge). Verify live times on the National Rail app Saturday night — marathon Sunday runs extra direct services.',
             mapsQuery: 'Charing Cross Station, London',
             transportDir: {
               name: 'Morning — Hotel Café Royal → Blackheath',
               steps: [
-                { icon: 'Walk', text: '7:55 — Leave Café Royal, walk to Charing Cross (~15 min via Piccadilly + Trafalgar Sq)' },
-                { icon: 'Board', text: '8:18 — Board Southeastern Dartford via Greenwich service to Blackheath (backup 8:23 or 8:28)' },
-                { icon: 'Ride', text: 'Ride ~24 min — stops at Waterloo East, London Bridge, then direct to Blackheath' },
-                { icon: 'Exit', text: '8:42 — Exit Blackheath (TCS recommended arrival window 8:42–8:53), ~20-min walk uphill to Blue Assembly Area' }
+                { icon: 'Walk', text: '8:00 — Leave Café Royal lobby, walk to Charing Cross (~15 min via Piccadilly + Trafalgar Sq)' },
+                { icon: 'Board', text: '8:15 — Arrive Charing Cross, show bib at gate, find platform, board 8:20 train to Blackheath (backup: 8:35 Charing Cross; extras every ~10 min)' },
+                { icon: 'Ride', text: 'Ride ~25 min — confirm service pattern on the platform display (some marathon extras run direct; regular Southeastern stops at Waterloo East + London Bridge)' },
+                { icon: 'Exit', text: '~8:45 — Exit Blackheath, follow crowd / signs ~20 min uphill to Blue Assembly Area' }
               ],
-              time: 'Arrive Blue Assembly by 9:02 (per TCS official guidance)'
+              time: 'Arrive Blue Assembly ~9:05 (within TCS window; pen closes 10:13 for Wave 10)'
             }
           },
           {
-            time: '9:02 am',
+            time: '8:45 am',
             emoji: '🔵',
-            name: 'Arrive at Blue Assembly Area',
-            details: 'TCS official target arrival time. Drop kitbag at lorry matching bib number — lorry drop closes ~30 min before your wave (~9:53). Toilet queues can be long — budget 20 min. Donate unwanted layers at collection points near Start Line.',
+            name: 'Blackheath → Blue Assembly Area',
+            details: 'Follow the crowd from Blackheath station ~20 min uphill to Blue Assembly. Lorry drop closes ~9:53 (30 min before wave). Toilet queues can be long — budget ~45 min. Donate unwanted layers at collection points near Start Line.',
             checklist: [
-              'Drop kitbag at correct lorry',
-              'Use toilets (budget 20 min)',
-              'Hydrate at Water Refill Station',
-              'Head to Blue Start pen by 10:10 — Wave 10 starts 10:23'
+              '8:45–9:05 — Walk Blackheath → Blue Assembly, drop kitbag at lorry matching bib #60613',
+              '9:05–9:50 — Toilets (long lines), stretch, hydrate at Water Refill Station, strip throwaway layers',
+              '~9:50–10:00 — Enter Blue Start pen before it closes (pen closes 10:13 for Wave 10)',
+              'Blue line on road = shortest route; follow pacer flags if targeting 4hr finish'
             ]
           },
           {

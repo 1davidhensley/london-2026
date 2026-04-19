@@ -512,3 +512,34 @@ Added a self-verifying version label to the footer (`#versionTag`) that compares
 Rationale: non-technical users shouldn't have to ping me to know whether their phone picked up the latest code. A footer line makes it one-scroll to self-diagnose. Cache v18 → v19 so the fix itself propagates.
 
 Also emailed David and Paula a plain-English update-instructions guide (draft in David's Gmail, covers the iOS "fully close" gesture for both home-button and Face-ID phones, Safari fallback, and the nuclear remove-and-readd).
+
+---
+
+### Session 16 — April 18, 2026 — Minute-by-minute Marathon Morning (from David's email to Paula)
+
+**What:** Incorporated the finalized minute-by-minute marathon morning plan that David emailed Paula Apr 18 (19:58 local), expanding Day 26 from a coarse "train + assembly + start" outline into a wake-to-wave timeline.
+
+**Changes to Day 26 (`dayData` in `index.html`):**
+- **New stop — `6:15 am · ⏰ Pre-Race Morning Routine`.** Checklist pulled verbatim from the email: wake (6:15), hydrate, order room service (6:25 → arrives 7:10), 6:25–6:55 buffer, Red Bull at 6:55 (starts 1-hour bathroom timer), 7:10–7:40 breakfast, dress 7:40–7:55, final bathroom 7:55, leave hotel 8:00. The Red Bull→breakfast→bathroom timing is load-bearing — it puts the caffeine-induced pit-stop BEFORE the train, not on it.
+- **Updated `Train to Blackheath` stop.** Times shifted: 7:55 → 8:00 leave hotel, 8:18 → 8:20 Charing Cross, 8:42 → ~8:45 Blackheath. Kept 8:18 Dartford-via-Greenwich and 8:35 Charing Cross documented as backups — still within TCS's 8:42–8:53 arrival window. Removed the "non-stop" claim from the email (unverified for 8:20 — regular Southeastern stops at Waterloo East + London Bridge; marathon extras may run direct). Added a prompt to verify live times on National Rail app Sat night.
+- **Reworked `Blue Assembly` stop.** Time label shifted 9:02 → 8:45 to reflect the email's actual flow: 8:45–9:05 walk up + drop kitbag, 9:05–9:50 toilets/stretch/strip layers, ~9:50–10:00 enter pen (closes 10:13). Previous "9:02 arrival" was the TCS target but the email breaks down what happens between arrival and wave start, which is the 45 min where things go sideways if you don't plan.
+- **Updated `Race Prep & Early Night` stop (Apr 25, 8:30 pm).** Alarm 7:30 → 6:15, added hotel wake-up call + backup alarm, added "pre-pack race bag" and "book room service for ~6:25 am" to checklist, added "verify 8:20 Charing Cross on National Rail app" check.
+- **Updated race-mode banner chips** (top of page): `Charing Cross 8:18 AM` → `8:20 AM`, `Blackheath 8:42` → `8:45`. Tower Bridge ~12:15 PM and Embankment ~2:05 PM chips unchanged (correctly reflect 4hr pace math).
+
+**Deliberately NOT changed:**
+- **Spectator passing times.** Email told Paula "mile 13 (~11:15 AM)" but at Wave 10 start 10:23 + 9:09/mi pace, mile 13 is ~12:22 PM. The app's existing Tower Bridge Mile 12 ~12:15 PM and Embankment Mile 24–25 ~2:05 PM are the correct math (Session 14 TCS-validated). Per David's decision, the app keeps the correct times; the email stays as-sent. David should verbally correct Paula before race morning or Paula will be at Tower Bridge ~1 hour early in the cold.
+- **`mom-dad/` app.** Email was to Paula only; mom-dad app keeps its Session 14 spectator plan.
+
+**Files touched:**
+- `index.html` — three edits in `dayData` Day 26 (new stop, modified train stop, modified assembly stop), one edit to Apr 25 prep stop, one edit to race-mode banner chips.
+- `sw.js` — cache `london-2026-v19` → `v20`.
+- `mom-dad/` — untouched.
+- `DEVELOPMENT.md` — this entry.
+
+**Offline:** No new cached assets, no new network calls. All data inline. Offline-safe by construction.
+
+**Verification:** Parsed `dayData` end-to-end with node to confirm no JS syntax breakage — 8 days, Day 26 now has 11 stops with correct time sequence (— · — · 6:15 am · 8:20 am · 8:45 am · 10:23 am · — · — · — · 4:45 pm · 6:15 pm). Served locally via `python -m http.server`, confirmed v20 SW responds.
+
+**Open item for David to confirm before Sunday:**
+1. Does an 8:20 Charing Cross → Blackheath direct service actually exist on marathon Sunday? The email claimed "non-stop" but that's unverified. The 8:18 Dartford-via-Greenwich is confirmed and also hits the TCS window — leaving both documented.
+2. Tell Paula the Tower Bridge passing time is ~12:15 PM, not 11:15 AM. Leave the hotel around 11:15 AM, not 10:30.
