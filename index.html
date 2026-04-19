@@ -12,7 +12,7 @@
   <title>London 2026 Trip Guide</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@700&family=Space+Grotesk:wght@400;500;600;700&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     /* #7: Font fallback for offline first-load */
     @font-face {
@@ -28,6 +28,20 @@
       font-weight: 700;
       font-display: swap;
       src: local('Playfair Display Bold'), local('PlayfairDisplay-Bold');
+    }
+    @font-face {
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 400 700;
+      font-display: swap;
+      src: local('Space Grotesk'), local('SpaceGrotesk-Regular');
+    }
+    @font-face {
+      font-family: 'Work Sans';
+      font-style: normal;
+      font-weight: 300 700;
+      font-display: swap;
+      src: local('Work Sans'), local('WorkSans-Regular');
     }
   </style>
   <style>
@@ -47,6 +61,23 @@
       --marathon-bg: #fef6ed;
       --transport-bg: #eef4f8;
       --transport-border: #b8d4e8;
+
+      /* The Line — new visual system (added 2026-04-19) */
+      --line-day: #1f4fb8;
+      --line-day-soft: rgba(31, 79, 184, 0.10);
+      --spring-gold: #c9a227;
+      --spring-gold-soft: rgba(201, 162, 39, 0.14);
+      --spring-green: #4a7c3a;
+      --spring-green-soft: rgba(74, 124, 58, 0.14);
+      --mjff: var(--marathon-red);
+      --mjff-soft: rgba(224, 120, 0, 0.12);
+      --paper: #f7f4ed;
+      --paper-2: #efeadd;
+      --ink: #0e1014;
+      --ink-2: #2d3038;
+      --ink-dim: #6a6e78;
+      --hairline: #d8d3c4;
+      --hairline-strong: #0e1014;
     }
 
     * {
@@ -1616,6 +1647,22 @@
         --marathon-bg: #2e2518;
         --transport-bg: #1e2a32;
         --transport-border: #3a5a6a;
+
+        /* The Line — dark mode */
+        --line-day: #6f9bff;
+        --line-day-soft: rgba(111, 155, 255, 0.18);
+        --spring-gold: #e7c35a;
+        --spring-gold-soft: rgba(231, 195, 90, 0.18);
+        --spring-green: #8cc070;
+        --spring-green-soft: rgba(140, 192, 112, 0.16);
+        --mjff-soft: rgba(243, 148, 55, 0.20);
+        --paper: #0f1012;
+        --paper-2: #191b20;
+        --ink: #f2eee3;
+        --ink-2: #cac4b7;
+        --ink-dim: #948e80;
+        --hairline: #2e3037;
+        --hairline-strong: #f2eee3;
       }
 
       body {
@@ -1920,6 +1967,888 @@
     }
     .race-mode-close:hover { opacity: 1; }
 
+    /* ============================================================ */
+    /* The Line — visual refresh (2026-04-19)                       */
+    /* Scoped under body.the-line so legacy rules don't conflict.    */
+    /* ============================================================ */
+    body.the-line {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Hero */
+    body.the-line .legacy-header { display: none; }
+    body.the-line .flight-bar,
+    body.the-line .flight-bar-toggle { display: none; }
+    body.the-line > .race-mode-banner { display: none; }
+
+    /* Zero out legacy `header { ... }` rules when the element is our hero */
+    body.the-line header.hero {
+      background: none;
+      color: var(--ink);
+      text-align: left;
+      box-shadow: none;
+      padding: 2.5rem 1.5rem 1.5rem;
+    }
+    body.the-line header.hero::after { content: none; display: none; }
+    body.the-line header.hero h1 {
+      font-size: clamp(2.8rem, 11vw, 4.6rem);
+      color: var(--ink);
+      letter-spacing: -0.04em;
+      margin-bottom: 1rem;
+    }
+
+    .hero {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 1.5rem;
+      position: relative;
+    }
+    .hero-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--line-day);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1.2rem;
+    }
+    .hero-label::before {
+      content: '';
+      width: 22px;
+      height: 4px;
+      background: var(--line-day);
+      border-radius: 2px;
+    }
+    .hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: clamp(2.8rem, 11vw, 4.6rem);
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      color: var(--ink);
+      margin-bottom: 1rem;
+    }
+    .hero-title .yr { color: var(--line-day); }
+    .hero-title .dot { color: var(--spring-gold); }
+    .hero-sub {
+      font-size: 0.92rem;
+      color: var(--ink-2);
+      max-width: 28em;
+      margin-bottom: 1.5rem;
+    }
+    .hero-meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      padding-top: 1rem;
+      border-top: 2px solid var(--hairline-strong);
+    }
+    .hero-meta .k {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-dim);
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+    .hero-meta .v {
+      font-weight: 600;
+      font-size: 0.88rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Season strip */
+    .season-strip {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 0 1.5rem 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ink-dim);
+      font-weight: 600;
+    }
+    .season-strip .bar {
+      flex: 1;
+      height: 3px;
+      border-radius: 2px;
+      background: linear-gradient(to right,
+        var(--spring-green) 0%, var(--spring-green) 40%,
+        var(--spring-gold) 40%, var(--spring-gold) 70%,
+        var(--line-day) 70%, var(--line-day) 100%);
+    }
+
+    /* Sticky pills */
+    body.the-line .day-pills {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(247, 244, 237, 0.93);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-top: 1px solid var(--hairline);
+      border-bottom: 1px solid var(--hairline);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      gap: 0.4rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+      box-shadow: none;
+    }
+    @media (prefers-color-scheme: dark) {
+      body.the-line .day-pills { background: rgba(15, 16, 18, 0.94); }
+    }
+    body.the-line .day-pills::-webkit-scrollbar { display: none; }
+    body.the-line .day-pill {
+      flex-shrink: 0;
+      padding: 0.42rem 0.8rem;
+      background: var(--card);
+      border: 1.5px solid var(--hairline-strong);
+      color: var(--ink);
+      border-radius: 999px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      font-size: 0.78rem;
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: none;
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+    body.the-line .day-pill:hover {
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+    body.the-line .day-pill.active {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink);
+      box-shadow: none;
+    }
+    body.the-line .day-pill.marathon {
+      background: var(--card);
+      color: var(--mjff);
+      border-color: var(--mjff);
+      box-shadow: none;
+    }
+    body.the-line .day-pill.marathon.active {
+      background: var(--mjff);
+      color: #fff;
+      border-color: var(--mjff);
+    }
+    body.the-line .day-pill.marathon:hover {
+      background: var(--mjff-soft);
+      color: var(--mjff);
+      border-color: var(--mjff);
+    }
+    body.the-line .day-pill.resources-pill,
+    body.the-line .day-pill.packing-pill {
+      background: var(--card);
+      color: var(--spring-gold);
+      border-color: var(--spring-gold);
+      font-weight: 600;
+    }
+    body.the-line .day-pill.resources-pill:hover,
+    body.the-line .day-pill.packing-pill:hover {
+      background: var(--spring-gold-soft);
+      color: var(--spring-gold);
+      border-color: var(--spring-gold);
+    }
+    body.the-line .day-pill.resources-pill.active,
+    body.the-line .day-pill.packing-pill.active {
+      background: var(--spring-gold);
+      color: #fff;
+      border-color: var(--spring-gold);
+    }
+    body.the-line .day-pill.today {
+      box-shadow: 0 0 0 3px var(--spring-gold-soft);
+    }
+    body.the-line .day-pill.today::after {
+      background: var(--spring-gold);
+    }
+
+    /* Main container + the vertical line */
+    body.the-line main {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 1.5rem 1.5rem 2rem;
+      position: relative;
+      gap: 0;
+    }
+    .timeline {
+      position: absolute;
+      left: calc(1.5rem + 20px);
+      top: 0;
+      bottom: 2rem;
+      width: 6px;
+      border-radius: 3px;
+      background: var(--line-day);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Each day = station on the line */
+    body.the-line .day-card {
+      position: relative;
+      margin-bottom: 2rem;
+      padding-left: 3.5rem;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      animation: none;
+      overflow: visible;
+    }
+    body.the-line .day-card::before {
+      content: '';
+      position: absolute;
+      left: 14px;
+      top: 10px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--card);
+      border: 5px solid var(--line-day);
+      z-index: 2;
+    }
+    body.the-line .day-card.marathon-day::before {
+      border-color: var(--mjff);
+      box-shadow: 0 0 0 6px var(--mjff-soft);
+      width: 28px;
+      height: 28px;
+      left: 12px;
+      top: 8px;
+    }
+    body.the-line .day-card.today-card {
+      box-shadow: none;
+    }
+
+    /* Day header (station head) */
+    body.the-line .day-card-header {
+      padding: 0 0 0.75rem 0;
+      margin-bottom: 0.75rem;
+      background: none;
+      color: inherit;
+      box-shadow: none;
+      border: none;
+      border-bottom: 2px solid var(--hairline-strong);
+      min-height: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      cursor: pointer;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0.05);
+      touch-action: manipulation;
+    }
+    body.the-line .day-card-header:hover,
+    body.the-line .day-card.marathon-day .day-card-header,
+    body.the-line .day-card.marathon-day .day-card-header:hover {
+      background: none;
+    }
+    body.the-line .day-head-left { flex: 1; min-width: 0; }
+    body.the-line .day-num-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      margin-bottom: 0.25rem;
+      flex-wrap: wrap;
+    }
+    body.the-line .day-number {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 2.4rem;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      margin-bottom: 0;
+    }
+    body.the-line .day-card.marathon-day .day-number { color: var(--mjff); }
+    body.the-line .day-weekday {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--ink-dim);
+      font-weight: 700;
+    }
+    body.the-line .day-theme {
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: var(--ink);
+    }
+    body.the-line .day-theme .em { margin-right: 0.35rem; }
+    body.the-line .day-date {
+      font-size: 0.74rem;
+      color: var(--ink-dim);
+      margin-top: 0.2rem;
+      letter-spacing: 0.02em;
+      opacity: 1;
+    }
+    body.the-line .day-toggle {
+      color: var(--ink-dim);
+      transition: transform 0.25s;
+      font-size: 1.1rem;
+      align-self: center;
+    }
+
+    /* Preserve max-height animation for open/close — max-height 50000px matters (KNOWN-ISSUES §4) */
+    body.the-line .day-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    body.the-line .day-card.expanded .day-content {
+      max-height: 50000px;
+    }
+
+    /* Weather pill */
+    body.the-line .weather-bar {
+      display: inline-flex;
+      gap: 0.75rem;
+      align-items: center;
+      padding: 0.4rem 0.75rem;
+      margin-bottom: 1rem;
+      background: var(--spring-green-soft);
+      border: 1px solid var(--spring-green);
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-variant-numeric: tabular-nums;
+      color: var(--ink-2);
+      box-shadow: none;
+      flex-wrap: wrap;
+    }
+    body.the-line .weather-bar .weather-icon {
+      font-size: 1.1rem;
+    }
+    body.the-line .weather-bar .weather-details {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      grid-template-columns: none;
+    }
+    body.the-line .weather-bar .weather-item {
+      display: inline-flex;
+      gap: 0.3rem;
+      align-items: center;
+    }
+    body.the-line .weather-bar .weather-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--spring-green);
+      font-weight: 700;
+    }
+    body.the-line .weather-bar .weather-value {
+      color: var(--ink-2);
+      white-space: nowrap;
+    }
+    body.the-line .weather-bar .weather-item {
+      white-space: nowrap;
+    }
+    body.the-line .weather-bar .weather-desc {
+      color: var(--ink-dim);
+      font-size: 0.76rem;
+      letter-spacing: 0;
+      text-transform: none;
+      font-weight: 400;
+    }
+
+    /* Stops track = mini tube line inside the day */
+    body.the-line .stop-list {
+      padding: 0;
+      border-top: none;
+      position: relative;
+      padding-left: 1.25rem;
+      margin-top: 0.25rem;
+    }
+    body.the-line .stop-list::before {
+      content: '';
+      position: absolute;
+      left: 5px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: var(--line-day);
+      opacity: 0.5;
+    }
+    body.the-line .day-card.marathon-day .stop-list::before {
+      background: var(--mjff);
+      opacity: 0.7;
+    }
+    body.the-line .stop-list .stop-connector { display: none; }
+
+    body.the-line .stop {
+      position: relative;
+      padding: 0.1rem 0 0.95rem;
+      margin-bottom: 0;
+      background: transparent;
+      border-left: none;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    body.the-line .stop:hover,
+    body.the-line .day-card.marathon-day .stop,
+    body.the-line .day-card.marathon-day .stop:hover {
+      background: transparent;
+      box-shadow: none;
+    }
+    body.the-line .stop .timeline-dot {
+      left: -1.25rem;
+      top: 0.4rem;
+      transform: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--card);
+      border: 2.5px solid var(--line-day);
+      z-index: 2;
+    }
+    body.the-line .day-card.marathon-day .stop .timeline-dot {
+      background: var(--card);
+      border-color: var(--mjff);
+    }
+    body.the-line .stop.marathon-highlight .timeline-dot {
+      background: var(--mjff);
+      border-color: var(--mjff);
+      box-shadow: 0 0 0 4px var(--mjff-soft);
+    }
+    body.the-line .stop.now {
+      background: transparent;
+      border-left: none;
+      box-shadow: none;
+    }
+    body.the-line .stop.now::after {
+      background: var(--spring-gold);
+      color: #fff;
+    }
+
+    body.the-line .stop-time {
+      display: inline-block;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--line-day);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      padding: 0.14rem 0.5rem;
+      background: var(--line-day-soft);
+      border-radius: 3px;
+      margin-bottom: 0.3rem;
+    }
+    body.the-line .day-card.marathon-day .stop-time {
+      color: var(--mjff);
+      background: var(--mjff-soft);
+    }
+    body.the-line .stop-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.3rem;
+      margin-bottom: 0.25rem;
+    }
+    body.the-line .stop-emoji { font-size: 1rem; flex-shrink: 0; }
+    body.the-line .stop-name {
+      font-weight: 500;
+      font-size: 1rem;
+      color: var(--ink);
+      font-family: 'Work Sans', sans-serif;
+    }
+    body.the-line .stop-name a { color: inherit; border-bottom-color: transparent; }
+    body.the-line .stop-name a:hover { border-bottom-color: currentColor; }
+    body.the-line .stop-details {
+      font-size: 0.84rem;
+      color: var(--ink-dim);
+      margin-top: 0.15rem;
+      margin-left: 0;
+      line-height: 1.5;
+    }
+
+    /* Checklist */
+    body.the-line .stop-checklist {
+      margin-left: 0;
+      margin-top: 0.5rem;
+    }
+    body.the-line .stop-checklist-item {
+      padding: 0.35rem 0;
+      border-bottom: 1px solid var(--hairline);
+    }
+    body.the-line .stop-checklist-item input[type="checkbox"] {
+      accent-color: var(--line-day);
+    }
+    body.the-line .day-card.marathon-day .stop-checklist-item input[type="checkbox"] {
+      accent-color: var(--mjff);
+    }
+    body.the-line .stop-checklist-item label {
+      font-size: 0.84rem;
+      color: var(--ink-2);
+      font-family: 'Work Sans', sans-serif;
+    }
+
+    /* Maps button (gold) */
+    body.the-line .maps-btn,
+    body.the-line .maps-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.38rem 0.7rem;
+      border-radius: 999px;
+      background: var(--spring-gold-soft);
+      border: 1.5px solid var(--spring-gold);
+      color: var(--spring-gold);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      font-weight: 700;
+      text-transform: uppercase;
+      text-decoration: none;
+      margin: 0;
+      box-shadow: none;
+    }
+    body.the-line .maps-btn::before,
+    body.the-line .maps-link::before { content: none; }
+    body.the-line .maps-btn:hover,
+    body.the-line .maps-btn:active,
+    body.the-line .maps-link:hover,
+    body.the-line .maps-link:active {
+      background: var(--spring-gold);
+      color: #fff;
+    }
+    body.the-line .day-card.marathon-day .maps-btn,
+    body.the-line .day-card.marathon-day .maps-link {
+      background: var(--mjff-soft);
+      border-color: var(--mjff);
+      color: var(--mjff);
+    }
+    body.the-line .day-card.marathon-day .maps-btn:hover,
+    body.the-line .day-card.marathon-day .maps-link:hover {
+      background: var(--mjff);
+      color: #fff;
+    }
+    body.the-line .stop-maps-link {
+      margin-top: 0.5rem;
+    }
+
+    /* Walk transition */
+    body.the-line .walk-transition {
+      margin: 0.45rem 0 0;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.78rem;
+      color: var(--ink-2);
+      font-style: italic;
+      background: var(--spring-green-soft);
+      border: none;
+      border-left: 3px solid var(--spring-green);
+      border-radius: 0 4px 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      margin-left: 0;
+    }
+    body.the-line .walk-transition .walk-icon { font-size: 0.9rem; }
+    body.the-line .walk-transition .walk-maps {
+      margin-left: auto;
+      font-style: normal;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--spring-green);
+      text-decoration: none;
+      padding: 0.15rem 0.45rem;
+      border: 1.5px solid var(--spring-green);
+      border-radius: 999px;
+      background: transparent;
+      box-shadow: none;
+    }
+    body.the-line .walk-transition .walk-maps::before { content: none; }
+    body.the-line .walk-transition .walk-maps:hover {
+      background: var(--spring-green);
+      color: #fff;
+    }
+
+    /* Inline transit block */
+    body.the-line .inline-transport {
+      margin-top: 0.5rem;
+      padding: 0.6rem 0.8rem;
+      background: var(--paper-2);
+      border: none;
+      border-left: 4px solid var(--line-day);
+      border-radius: 6px;
+    }
+    body.the-line .inline-transport-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.66rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--line-day);
+      margin-bottom: 0.3rem;
+    }
+    body.the-line .inline-transport .transport-step {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.82rem;
+      color: var(--ink-2);
+      padding: 0.12rem 0;
+    }
+    body.the-line .inline-transport .transport-step-icon {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    body.the-line .inline-transport .transport-time {
+      font-size: 0.75rem;
+      color: var(--ink-dim);
+      margin-top: 0.4rem;
+      padding-top: 0.35rem;
+      border-top: 1px solid var(--hairline);
+    }
+    body.the-line .inline-transport .transit-maps,
+    body.the-line .inline-transport .maps-link {
+      display: inline-block;
+      margin-top: 0.4rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.64rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--line-day);
+      text-decoration: none;
+      padding: 0.2rem 0.5rem;
+      border: 1.5px solid var(--line-day);
+      border-radius: 999px;
+      background: transparent;
+      box-shadow: none;
+    }
+    body.the-line .inline-transport .transit-maps::before,
+    body.the-line .inline-transport .maps-link::before { content: none; }
+    body.the-line .inline-transport .transit-maps:hover,
+    body.the-line .inline-transport .maps-link:hover {
+      background: var(--line-day);
+      color: #fff;
+    }
+
+    /* Tags + stop-actions row */
+    body.the-line .tags,
+    body.the-line .stop-actions {
+      margin-left: 0;
+      margin-top: 0.5rem;
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    body.the-line .tag {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 0.24rem 0.55rem;
+      border-radius: 3px;
+      white-space: nowrap;
+    }
+    body.the-line .tag.tag-ticket,
+    body.the-line .tag.tick {
+      background: var(--line-day);
+      color: #fff;
+      border: none;
+    }
+    body.the-line .tag.tag-reservation,
+    body.the-line .tag.res {
+      background: transparent;
+      border: 1.5px solid var(--spring-green);
+      color: var(--spring-green);
+    }
+    body.the-line .tag.hl {
+      background: var(--mjff);
+      color: #fff;
+      border: none;
+    }
+
+    /* Ticket button */
+    body.the-line .ticket-btn-large {
+      width: 100%;
+      margin-top: 0.5rem;
+      margin-left: 0;
+      max-width: 100%;
+      padding: 0.6rem 1rem;
+      background: var(--line-day);
+      color: #fff;
+      border-radius: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      box-shadow: none;
+      border: none;
+      cursor: pointer;
+    }
+    body.the-line .ticket-btn-large:hover {
+      background: #1a3f94;
+      box-shadow: 0 4px 10px rgba(31, 79, 184, 0.2);
+      transform: none;
+    }
+    body.the-line .day-card.marathon-day .ticket-btn-large {
+      background: var(--mjff);
+    }
+    body.the-line .day-card.marathon-day .ticket-btn-large:hover {
+      background: #b35f00;
+    }
+
+    /* Race Mode block — inside Day 26 */
+    body.the-line .racemode {
+      border: 2px solid var(--mjff);
+      background: linear-gradient(180deg, var(--card) 0%, var(--mjff-soft) 100%);
+      padding: 1.15rem 1.2rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      position: relative;
+      overflow: hidden;
+      color: var(--ink);
+      box-shadow: none;
+    }
+    body.the-line .racemode::before {
+      content: '';
+      position: absolute;
+      right: -40px;
+      top: -40px;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--mjff-soft) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    body.the-line .racemode .race-k {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--mjff);
+      font-weight: 700;
+      margin-bottom: 0.45rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    body.the-line .racemode .race-k::before {
+      content: '';
+      width: 16px;
+      height: 3px;
+      background: var(--mjff);
+      border-radius: 2px;
+    }
+    body.the-line .racemode .race-count {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 2.4rem;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      font-variant-numeric: tabular-nums;
+      color: var(--ink);
+      margin-bottom: 0.3rem;
+    }
+    body.the-line .racemode .race-sub {
+      font-size: 0.8rem;
+      color: var(--ink-2);
+      margin-bottom: 0.8rem;
+    }
+    body.the-line .racemode .race-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.4rem;
+    }
+    body.the-line .racemode .race-chip {
+      background: var(--card);
+      border: 1.5px solid var(--mjff);
+      padding: 0.5rem 0.65rem;
+      font-size: 0.78rem;
+      border-radius: 4px;
+      color: var(--ink);
+    }
+    body.the-line .racemode .race-chip b {
+      display: block;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--mjff);
+      font-weight: 700;
+      margin-bottom: 0.15rem;
+    }
+    body.the-line .racemode .race-mode-close {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: transparent;
+      color: var(--mjff);
+      border: 1.5px solid var(--mjff);
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      font-size: 1rem;
+      line-height: 1;
+      cursor: pointer;
+      opacity: 0.85;
+      z-index: 3;
+    }
+    body.the-line .racemode .race-mode-close:hover {
+      background: var(--mjff);
+      color: #fff;
+      opacity: 1;
+    }
+
+    /* Birds chip — recolor to spring green */
+    body.the-line .birds-chip {
+      background: var(--spring-green-soft);
+      border: 1px solid var(--spring-green);
+      border-radius: 8px;
+    }
+    body.the-line .birds-chip-header { color: var(--spring-green); }
+    body.the-line .bird-entry { border-top: 1px solid var(--hairline); }
+    body.the-line .bird-entry-name { color: var(--spring-green); }
+
+    /* Back-to-top tints to ink */
+    body.the-line .back-to-top {
+      background: var(--ink);
+      color: var(--paper);
+      box-shadow: 0 4px 12px rgba(14, 16, 20, 0.35);
+    }
+    body.the-line .back-to-top:hover { background: var(--ink-2); }
+
+    /* Modal carry-over — keep current styling but ink border */
+    body.the-line .modal-content {
+      border: 1px solid var(--hairline);
+    }
+
+    /* Responsive tweaks for the-line */
+    @media (max-width: 480px) {
+      body.the-line main { padding: 1rem; }
+      .timeline { left: calc(1rem + 20px); }
+    }
+
     /* Print Styles */
     @media print {
       .day-pills, .back-to-top, .flight-bar-toggle, .app-footer {
@@ -1936,28 +2865,25 @@
     }
   </style>
 </head>
-<body>
-  <header>
-    <h1>London 2026 <span class="flag">🇬🇧</span></h1>
-    <p class="subtitle">April 21-28 · Marathon Trip</p>
-  </header>
-
-  <div class="race-mode-banner" id="raceModeBanner" hidden>
-    <button class="race-mode-close" id="raceModeClose" aria-label="Dismiss">×</button>
-    <div class="race-mode-title">🏅 Race Day</div>
-    <div class="race-mode-countdown" id="raceModeCountdown">—</div>
-    <div class="race-mode-subtitle" id="raceModeSubtitle">Wave 10 · Blue Start · Bib #60613</div>
-    <div class="race-mode-grid">
-      <div class="race-mode-chip"><strong>Charing Cross</strong>8:20 AM train</div>
-      <div class="race-mode-chip"><strong>Blackheath</strong>8:45 arrival</div>
-      <div class="race-mode-chip"><strong>Blue Assembly</strong>by 9:02 AM</div>
-      <div class="race-mode-chip"><strong>Start pen</strong>by 10:10 AM</div>
-      <div class="race-mode-chip"><strong>Tower Bridge</strong>~12:15 PM (Paula)</div>
-      <div class="race-mode-chip"><strong>Embankment</strong>~2:05 PM (Paula)</div>
+<body class="the-line">
+  <header class="hero">
+    <div class="hero-label">The London Line · David &amp; Paula</div>
+    <h1 class="hero-title">London<br>26<span class="dot">.</span></h1>
+    <p class="hero-sub">Eight days between Heathrow and home, with Wave 10 somewhere near the middle.</p>
+    <div class="hero-meta">
+      <div><div class="k">Depart</div><div class="v">Apr 21</div></div>
+      <div><div class="k">Return</div><div class="v">Apr 28</div></div>
+      <div><div class="k">Bib</div><div class="v">#60613</div></div>
     </div>
+  </header>
+  <div class="season-strip">
+    <span>Spring · London</span>
+    <span class="bar"></span>
+    <span>Daffodils · Plane trees · Showers</span>
   </div>
 
-  <div class="flight-bar" id="flightBar">
+  <!-- Legacy flight bar + race-mode-banner removed — race block now renders inline inside Day 26. Flight details live in Travel & Stays. -->
+  <div class="flight-bar" id="flightBar" hidden>
     <div class="flight-info">
       <strong>Outbound:</strong>
       <span class="route">DL0020 SEA→LHR</span>
@@ -1967,7 +2893,7 @@
       <span class="route">DL0021 LHR→SEA</span>
     </div>
   </div>
-  <button class="flight-bar-toggle" id="flightToggle">✈️ Flight Info</button>
+  <button class="flight-bar-toggle" id="flightToggle" hidden>✈️ Flight Info</button>
 
   <div class="day-pills" id="dayPills">
     <button class="day-pill active" data-view="all">All Days</button>
@@ -2417,10 +3343,10 @@
         date: 'Tuesday, April 21',
         theme: '✈️ Arrival Day',
         weather: {
-          temp: '15°C / 59°F',
+          temp: '59°F',
           icon: '⛅',
           desc: 'Partly cloudy',
-          rain: '35% rain'
+          rain: '35%'
         },
         stops: [
           {
@@ -2468,10 +3394,10 @@
         date: 'Wednesday, April 22',
         theme: '🏰 Tower + City + Soho',
         weather: {
-          temp: '15°C / 59°F',
+          temp: '59°F',
           icon: '⛅',
           desc: 'Partly cloudy',
-          rain: '35% rain'
+          rain: '35%'
         },
         stops: [
           {
@@ -2647,10 +3573,10 @@
         date: 'Thursday, April 23',
         theme: '🏛 Westminster + South Bank',
         weather: {
-          temp: '15°C / 59°F',
+          temp: '59°F',
           icon: '⛅',
           desc: 'Partly cloudy',
-          rain: '35% rain'
+          rain: '35%'
         },
         stops: [
           {
@@ -2765,10 +3691,10 @@
         date: 'Friday, April 24',
         theme: '📚 Museum + Covent Garden',
         weather: {
-          temp: '15°C / 59°F',
+          temp: '59°F',
           icon: '⛅',
           desc: 'Partly cloudy',
-          rain: '35% rain'
+          rain: '35%'
         },
         stops: [
           {
@@ -2909,10 +3835,10 @@
         date: 'Saturday, April 25',
         theme: '🪖 Churchill + Soho + Marylebone',
         weather: {
-          temp: '15°C / 59°F',
+          temp: '59°F',
           icon: '⛅',
           desc: 'Partly cloudy',
-          rain: '35% rain'
+          rain: '35%'
         },
         stops: [
           {
@@ -3079,10 +4005,10 @@
         theme: '🏅 MARATHON DAY! · Team Fox / MJFF',
         isMarathon: true,
         weather: {
-          temp: '15°C / 59°F',
+          temp: '59°F',
           icon: '⛅',
           desc: 'Partly cloudy',
-          rain: '35% rain — Marathon weather: check morning forecast'
+          rain: '35% — check morning forecast'
         },
         stops: [
           {
@@ -3213,10 +4139,10 @@
         date: 'Monday, April 27',
         theme: '💆 Kensington + Central',
         weather: {
-          temp: '15°C / 59°F',
+          temp: '59°F',
           icon: '⛅',
           desc: 'Partly cloudy',
-          rain: '35% rain'
+          rain: '35%'
         },
         stops: [
           {
@@ -3330,10 +4256,10 @@
         date: 'Tuesday, April 28',
         theme: '🌉 South Bank Farewell',
         weather: {
-          temp: '15°C / 59°F',
+          temp: '59°F',
           icon: '⛅',
           desc: 'Partly cloudy',
-          rain: '35% rain'
+          rain: '35%'
         },
         stops: [
           {
@@ -3648,10 +4574,10 @@
             const [icon, desc] = WMO_CODES[code] || ['⛅', 'Partly cloudy'];
             const rain = daily.precipitation_probability_max[i] || 0;
             forecastMap[dateStr] = {
-              temp: `${hi}°C / ${hiF}°F (Low: ${lo}°C / ${loF}°F)`,
+              temp: `${hiF}°F / ${loF}°F`,
               icon: icon,
               desc: desc,
-              rain: `${rain}% rain`
+              rain: `${rain}%`
             };
           });
 
@@ -3669,8 +4595,8 @@
             if (bar) {
               bar.querySelector('.weather-icon').textContent = fc.icon;
               bar.querySelector('.weather-temp').textContent = day.weather.temp;
-              bar.querySelector('.weather-desc').textContent = fc.desc;
               bar.querySelector('.weather-rain').textContent = day.weather.rain;
+              bar.setAttribute('title', fc.desc);
               updated++;
             }
           });
@@ -3903,37 +4829,79 @@
       }
     }
 
-    // Render day cards
+    // Render day cards — The Line visual system (2026-04-19)
+    // Each day = a station on the vertical tube line. Station dot + day-head + stops mini-track.
+    // Preserves dayData shape, checklist localStorage keys, ticket buttons, all Maps URL builders.
     function renderDayCards() {
       const container = document.getElementById('dayCards');
-      // #3: Detect today's date for highlighting
       const now = new Date();
       const todayDay = (now.getFullYear() === 2026 && now.getMonth() === 3) ? now.getDate() : null;
+      const todayInTrip = dayData.some(d => d.number === todayDay);
 
-      container.innerHTML = dayData.map(day => `
-        <div class="day-card ${day.number === todayDay ? 'expanded today-card' : (day.number === 21 && !todayDay ? 'expanded' : '')} ${day.isMarathon ? 'marathon' : ''}" data-day="${day.number}">
+      // URL builders — preserve exactly; the app is useless without these.
+      const mapsSearch = q => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
+      const mapsWalk = q => `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(q)}&travelmode=walking`;
+      const mapsTransit = q => `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(q)}&travelmode=transit`;
+
+      // Derive "Tue" from "Tuesday, April 21"
+      const weekdayShort = d => (d.date || '').split(',')[0].slice(0, 3);
+      // Split "✈️ Arrival Day" into { em: '✈️', rest: 'Arrival Day' } for styled emoji
+      const splitTheme = t => {
+        const m = (t || '').match(/^(\S+)\s*(.*)$/);
+        return m ? { em: m[1], rest: m[2] } : { em: '', rest: t || '' };
+      };
+
+      // Race-day banner rendered inline inside Day 26's card; retains the IDs that initRaceMode() wires
+      const raceBanner = `
+        <div class="racemode" id="raceModeBanner">
+          <button class="race-mode-close" id="raceModeClose" aria-label="Dismiss">×</button>
+          <div class="race-k">🏅 Race Day · Live Countdown</div>
+          <div class="race-count" id="raceModeCountdown">10:23 AM · Wave 10</div>
+          <div class="race-sub" id="raceModeSubtitle">Wave 10 · Blue Start · Bib #60613 · Team Fox / MJFF</div>
+          <div class="race-grid">
+            <div class="race-chip"><b>Charing Cross</b>8:20 AM train</div>
+            <div class="race-chip"><b>Blackheath</b>8:45 arrival</div>
+            <div class="race-chip"><b>Blue Assembly</b>by 9:02 AM</div>
+            <div class="race-chip"><b>Start pen</b>by 10:10 AM</div>
+            <div class="race-chip"><b>Tower Bridge</b>~12:15 PM (Paula)</div>
+            <div class="race-chip"><b>Embankment</b>~2:05 PM (Paula)</div>
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = `<div class="timeline"></div>` + dayData.map((day, dayIdx) => {
+        const isMarathon = !!day.isMarathon;
+        const stationNum = dayIdx + 1;
+        const weekday = weekdayShort(day);
+        const theme = splitTheme(day.theme);
+        const expanded = day.number === todayDay ? 'expanded today-card' : (!todayInTrip && day.number === 21 ? 'expanded' : '');
+        const cardClass = ['day-card', expanded, isMarathon ? 'marathon-day' : ''].filter(Boolean).join(' ');
+
+        return `
+        <div class="${cardClass}" data-day="${day.number}">
           <div class="day-card-header">
-            <div class="day-header-content">
-              <div class="day-number">${day.number}</div>
+            <div class="day-head-left">
+              <div class="day-num-row">
+                <span class="day-number">${day.number}</span>
+                <span class="day-weekday">${weekday} · Station ${stationNum}${isMarathon ? ' · MJFF' : ''}</span>
+              </div>
+              <div class="day-theme">${theme.em ? `<span class="em">${theme.em}</span>` : ''}${theme.rest}</div>
               <div class="day-date">${day.date}</div>
-              <div class="day-theme">${day.theme}</div>
             </div>
-            <div class="day-toggle">▼</div>
+            <div class="day-toggle">▾</div>
           </div>
           <div class="day-content">
+            ${isMarathon ? raceBanner : ''}
             ${day.weather ? `
-              <div class="weather-bar" data-weather-day="${day.number}">
+              <div class="weather-bar" data-weather-day="${day.number}" title="${day.weather.desc}">
                 <span class="weather-icon">${day.weather.icon}</span>
                 <div class="weather-details">
                   <div class="weather-item">
-                    <span class="weather-label">Temp:</span>
+                    <span class="weather-label">Temp</span>
                     <span class="weather-value weather-temp">${day.weather.temp}</span>
                   </div>
                   <div class="weather-item">
-                    <span class="weather-label weather-desc">${day.weather.desc}</span>
-                  </div>
-                  <div class="weather-item">
-                    <span class="weather-label">Rain:</span>
+                    <span class="weather-label">Rain</span>
                     <span class="weather-value weather-rain">${day.weather.rain}</span>
                   </div>
                 </div>
@@ -3963,8 +4931,12 @@
             })()}
             <div class="stop-list">
               <div class="stop-connector"></div>
-              ${day.stops.map((stop, idx) => `
-                <div class="stop" data-stop-idx="${idx}">
+              ${day.stops.map((stop, idx) => {
+                const isStart = isMarathon && /wave\s*10\s*start/i.test(stop.name || '');
+                const hasTransport = !!stop.transportDir;
+                const hasActions = (stop.mapsQuery && !hasTransport) || stop.tickets || stop.reservation || isStart;
+                return `
+                <div class="stop${isStart ? ' marathon-highlight' : ''}" data-stop-idx="${idx}">
                   <div class="timeline-dot"></div>
                   <div class="stop-time">${stop.time}</div>
                   <div class="stop-header">
@@ -3983,29 +4955,26 @@
                   ` : (stop.details ? `
                     <div class="stop-details">${stop.details}</div>
                   ` : '')}
-                  ${stop.reservation ? `
-                    <div class="tags">
-                      <span class="tag tag-reservation">📋 ${stop.reservation.bookedBy} · ${stop.reservation.partySize} people</span>
+                  ${hasActions ? `
+                    <div class="stop-actions">
+                      ${stop.mapsQuery && !hasTransport ? `<a href="${mapsSearch(stop.mapsQuery)}" target="_blank" rel="noopener" class="maps-btn stop-maps-link">📍 Open in Maps</a>` : ''}
+                      ${stop.tickets ? `<span class="tag tick">🎟 ${stop.tickets.name}</span>` : ''}
+                      ${stop.reservation ? `<span class="tag res">📋 ${stop.reservation.bookedBy} · ${stop.reservation.partySize}</span>` : ''}
+                      ${isStart ? `<span class="tag hl">Start line</span>` : ''}
                     </div>
                   ` : ''}
                   ${stop.tickets ? `
-                    <div class="tags">
-                      <span class="tag tag-ticket">🎟 ${stop.tickets.name}</span>
-                    </div>
                     <button class="ticket-btn-large" onclick="viewTicket('${stop.tickets.name}', '${stop.tickets.pdf}')">🎟 View ${stop.tickets.name} Tickets</button>
                   ` : ''}
-                  ${stop.mapsQuery && !stop.transportDir ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(stop.mapsQuery)}" target="_blank" rel="noopener" class="maps-link stop-maps-link">📍 Open in Maps</a>` : ''}
                 </div>
                 ${stop.walkTo ? `
                   <div class="walk-transition">
                     <span class="walk-icon">🚶</span>
                     <span>${stop.walkTo}</span>
-                    ${stop.walkMapsQuery ? `
-                      <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(stop.walkMapsQuery)}&travelmode=walking" target="_blank" rel="noopener" class="maps-link">Open in Maps</a>
-                    ` : ''}
+                    ${stop.walkMapsQuery ? `<a href="${mapsWalk(stop.walkMapsQuery)}" target="_blank" rel="noopener" class="walk-maps">Walk →</a>` : ''}
                   </div>
                 ` : ''}
-                ${stop.transportDir ? `
+                ${hasTransport ? `
                   <div class="inline-transport">
                     <div class="inline-transport-title">${stop.transportDir.name}</div>
                     ${stop.transportDir.steps.map(step => `
@@ -4015,18 +4984,18 @@
                       </div>
                     `).join('')}
                     <div class="transport-time">${stop.transportDir.time}</div>
-                    ${stop.mapsQuery ? `
-                      <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(stop.mapsQuery)}&travelmode=transit" target="_blank" rel="noopener" class="maps-link">Open in Maps</a>
-                    ` : ''}
+                    ${stop.mapsQuery ? `<a href="${mapsTransit(stop.mapsQuery)}" target="_blank" rel="noopener" class="transit-maps">Open transit in Maps</a>` : ''}
                   </div>
                 ` : ''}
-              `).join('')}
+              `;
+              }).join('')}
             </div>
           </div>
         </div>
-      `).join('');
+      `;
+      }).join('');
 
-      // #3: Highlight today's pill
+      // Highlight today's pill
       if (todayDay) {
         const todayPill = document.querySelector(`.day-pill[data-day="${todayDay}"]`);
         if (todayPill) {

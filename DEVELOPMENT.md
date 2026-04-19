@@ -543,3 +543,72 @@ Also emailed David and Paula a plain-English update-instructions guide (draft in
 **Open item for David to confirm before Sunday:**
 1. Does an 8:20 Charing Cross → Blackheath direct service actually exist on marathon Sunday? The email claimed "non-stop" but that's unverified. The 8:18 Dartford-via-Greenwich is confirmed and also hits the TCS window — leaving both documented.
 2. Tell Paula the Tower Bridge passing time is ~12:15 PM, not 11:15 AM. Leave the hotel around 11:15 AM, not 10:30.
+
+### Session 17 — April 19, 2026 — Visual refresh: "The Line"
+
+**What:** Ported the approved "Direction 3 · Line" visual system from the design iteration (bundled at `handoff-for-claude-code/direction-3-line-reference.html`) into the live David & Paula app. The itinerary now reads as a single vertical tube line — each day is a station, each stop is a dot on the track. The line is Piccadilly-adjacent blue for normal days; it turns MJFF orange for Race Day. Gold and leaf-green are used sparingly as spring accents.
+
+**Scope:** David & Paula's `index.html` only. `mom-dad/` was intentionally left on the Kensington Garden palette (separate repo, not in scope).
+
+**Preserved (no behaviour change):**
+- All `dayData` content — every stop, time, `mapsQuery`, `walkMapsQuery`, `transportDir`, `checklist`, `reservation`, `tickets`, birds, reservation party sizes.
+- Every Maps URL builder (`mapsSearch` / `mapsWalk` / `mapsTransit`) — spot-checked: 44 `mapsQuery`s in `dayData` render as 42 `.maps-btn` + 2 `.transit-maps`; all 4 `walkMapsQuery` entries render as `.walk-maps`. Counts match data exactly.
+- Service worker logic, offline cache-first strategy, ticket PDF loading (`viewTicket()`), localStorage keys (`london2026-checked`, `pack-dp-*`, `birds-dp-spotted`), weather fetch + Open-Meteo fallback to April averages, birds module, race-mode countdown math (`initRaceMode()`), MJFF orange as `--marathon-red: #e07800` source of truth.
+- Click-to-toggle day-card expansion, click-to-filter day pills, auto-expand today, packing list editor, resources accordion, ticket modal, back-to-top button, version tag footer.
+- Day-content `max-height: 50000px` animation (KNOWN-ISSUES §4 — do not lower).
+
+**Visual changes (index.html only):**
+- New CSS tokens added at top of `:root` (additions, not replacements — old Kensington Garden tokens still available in case anything still references them): `--line-day`, `--line-day-soft`, `--spring-gold`, `--spring-gold-soft`, `--spring-green`, `--spring-green-soft`, `--mjff` (aliases `--marathon-red`), `--mjff-soft`, `--paper`, `--paper-2`, `--ink`, `--ink-2`, `--ink-dim`, `--hairline`, `--hairline-strong`. Full dark-mode counterparts. See ARCHITECTURE.md token table.
+- Google Fonts link extended to include **Space Grotesk** (numerals, labels, hero wordmark) and **Work Sans** (body copy). Local `@font-face` fallbacks added for offline first-load parity with DM Sans / Playfair.
+- Legacy `<header>` swapped for `<header class="hero">` with wordmark ("London 26."), sub paragraph, and 3-column Depart / Return / Bib meta over a hairline top border. Added `.season-strip` underneath — a single three-segment green/gold/blue bar with "Spring · London" / "Daffodils · Plane trees · Showers" labels.
+- Day-nav `.day-pills` restyled as the sticky outline-pill bar with `backdrop-filter: blur(8px)` on a semi-transparent `--paper` background. Active pill uses ink fill; marathon pill uses MJFF orange outline → orange fill when active.
+- The big move: each day is now a **station on a vertical tube line**. A single absolutely-positioned `<div class="timeline"></div>` runs the full height of the `<main>` container. Each `.day-card` gets `padding-left: 3.5rem` and a `::before` station-dot overlaying the line (larger orange halo on `.marathon-day`). Inside each card, stops are dots on a thinner sub-line that also turns orange on Race Day.
+- Stop times are monospace Space Grotesk pills (blue fill at 10% alpha on normal days; orange on marathon). Maps buttons are gold outline pills; walk transitions are a spring-green inset block with an inline `Walk →` button; transit blocks have a blue left-border and a rounded `Open transit in Maps` pill.
+- Race Mode countdown block now renders inline inside Day 26's card (not as a separate top-of-page banner). Orange border, gradient background, radial blur corner, "Live Countdown" eyebrow, 6 chip grid for Charing Cross / Blackheath / Blue Assembly / Start pen / Tower Bridge / Embankment. IDs `#raceModeBanner` / `#raceModeCountdown` / `#raceModeSubtitle` / `#raceModeClose` preserved so `initRaceMode()` still wires without JS changes. Old top-of-body `.race-mode-banner` element removed; legacy `.flight-bar` hidden (flight details already live in Travel & Stays).
+- "Start line" MJFF highlight tag rendered on the 10:23 AM RACE START stop (detected in the renderer via `/wave\s*10\s*start/i.test(stop.name)`, no `dayData` change).
+- New styles are scoped under `body.the-line` so legacy rules don't leak into unrelated sections (Resources, Packing, Modal, Footer).
+
+**Renderer (`renderDayCards()`):**
+- Rewrote inner template. Class names kept (`.day-card`, `.day-card-header`, `.day-content`, `.stop-list`, `.stop`, `.timeline-dot`, `.stop-time`, `.stop-header`, `.stop-emoji`, `.stop-name`, `.stop-details`, `.stop-checklist`, `.tags`, `.tag`, `.walk-transition`, `.inline-transport`, `.ticket-btn-large`, `.weather-bar`, `.birds-chip`) so all existing event listeners, CSS, and JS queries keep working.
+- Added `.marathon-day` class on Day 26's `.day-card` (in addition to the existing `.marathon`) — new CSS targets `.marathon-day`, old CSS still targets `.marathon`, so nothing downstream breaks.
+- `<header class="day-card-header">` was changed to `<div class="day-card-header">` to dodge the legacy tag-scoped `header { ... }` CSS (which was adding `text-align: center`, a gold `::after` stripe, and padding). This is purely a tag swap — the class name and event wiring are unchanged.
+- New structural elements per card: `.day-head-left` / `.day-num-row` / `.day-weekday` (e.g. "TUE · STATION 1"). Theme string is split on the first grapheme (emoji) and the rest, so the emoji gets its own `.em` span for consistent spacing.
+- Marathon day's `.racemode` block is rendered as the first child of `.day-content` when `day.isMarathon`.
+- Small renderer-only fix: when today is in April 2026 but before the trip starts (e.g. Apr 19), Day 21 now auto-expands. Previously the `!todayDay` check in the original renderer failed in that window because `todayDay` was a valid number (19) not null, so nothing expanded. Replaced with `!todayInTrip` (derived from `dayData.some(d => d.number === todayDay)`), which preserves the original intent (auto-expand today if in range, else fall back to Day 21).
+
+**Cache bump:** `sw.js` `CACHE_NAME` `london-2026-v20` → `v22` (v21 was an intermediate during testing; shipped v22 includes the weather + copy tweaks below). `ASSETS_TO_CACHE` Google Fonts URL updated to include Space Grotesk + Work Sans alongside DM Sans + Playfair so the first offline load has all font families.
+
+**Weather + copy tweaks (post-review, same session):**
+- **Fahrenheit-only weather.** David doesn't use Celsius, so the weather pill now shows hi/lo in Fahrenheit only. `fetchWeather()` writes `${hiF}°F / ${loF}°F` (was `${hi}°C / ${hiF}°F (Low: ${lo}°C / ${loF}°F)`). All 8 `day.weather.temp` fallbacks in `dayData` updated from `'15°C / 59°F'` → `'59°F'`.
+- **Rain suffix trimmed.** Pill was wrapping to two lines on 375px mobile because the "rain" word in `"35% rain"` pushed the line over. Now just `"35%"`. Day 26's suffix simplified from `'35% rain — Marathon weather: check morning forecast'` → `'35% — check morning forecast'`.
+- **Description moved to `title` attribute.** The `Partly cloudy` / `Overcast` descriptor was the longest item in the pill; it now lives on the `<div class="weather-bar" title="…">` (hover / screen reader) instead of the visible layout. Pill reads `🌥️ TEMP 57°F / 45°F RAIN 12%` on one line.
+- **Nowrap on weather values.** Added `white-space: nowrap` to `.weather-value` + `.weather-item` so `57°F / 45°F` doesn't break mid-value.
+- **Hero sub copy.** Changed from `"Eight stations on one line, Seattle to Seattle. Wave 10 on Sunday somewhere near the middle."` to `"Eight days between Heathrow and home, with Wave 10 somewhere near the middle."` — closer to the reference's framing, less cutesy.
+- **Cache re-bumped to `v22`** for this second pass. Paula will need to fully close + reopen the app after deploy to pick it up.
+
+**Files touched:**
+- `index.html` — tokens, dark-mode tokens, fonts link + `@font-face`, `<header>` replacement, removed top-of-body race banner, new `body.the-line` CSS block (~560 lines), `renderDayCards()` rewrite, tiny expansion-logic fix.
+- `sw.js` — cache v20 → v21, fonts URL extended.
+- `mom-dad/` — **untouched** (still Kensington Garden).
+- `handoff-for-claude-code/` — new folder with `HANDOFF.md`, `README.md`, `direction-3-line-reference.html`, `trip-data-preview.js`. Reference material; not loaded by the app.
+- `ARCHITECTURE.md` — token table extended with "The Line" section.
+- `DEVELOPMENT.md` — this entry.
+
+**Verification in the live preview:**
+1. Light mode — blue line, gold Maps pills, green weather pill all clearly readable.
+2. Dark mode — line flips to cornflower blue (#6f9bff), MJFF orange glows on Day 26 station dot.
+3. Day 26 — station dot orange with 6px soft halo, `.day-number` "26" is orange, `.racemode` renders inside Day 26's content area with live countdown wiring, stops sub-line is orange, "START LINE" tag appears on the 10:23 AM stop.
+4. Maps URL counts verified in-browser against `dayData`: 42 `.maps-btn` + 2 `.transit-maps` = 44 (matches 44 `mapsQuery` entries); 4 `.walk-maps` (matches 4 `walkMapsQuery`); 29 `.walk-transition` (matches 29 `walkTo`); 4 `.ticket-btn-large`; 7 `.tag.res`; 87 `.stop` + 87 `.timeline-dot`; 1 `.racemode`; 1 `.tag.hl`.
+5. Ticket modal — clicking "View Tower of London Tickets" opens modal with `tickets/tower-of-london.pdf` in the iframe; close button dismisses.
+6. Checklist — toggling a stop checkbox persists to `localStorage['london2026-checked']` as `d22-s2-0: true` (etc.); survives reload.
+7. Pill filter — clicking `Sun 26` hides all other cards and expands Day 26 with orange pill in active state; clicking "All Days" restores the full timeline.
+8. Click-to-toggle on day-card header toggles `.expanded` class.
+
+**Not verified in preview (requires real device):**
+- Offline DevTools simulation
+- PWA "Add to Home Screen" on Paula's phone
+- iOS Safari rendering of `backdrop-filter` on the sticky pill bar
+
+**Open items:**
+- If anything in the Kensington Garden palette is visually referenced elsewhere (haven't found any — Resources/Packing/Modal still work) the old `--bg / --card / --primary / --accent / ...` tokens remain defined for backwards compatibility. Can be dead-code swept after a successful David+Paula install.
+- `mom-dad/` app not updated — per handoff, the visual refresh is D&P-only. If David wants the Line treatment for his parents' app later, that's a separate effort.

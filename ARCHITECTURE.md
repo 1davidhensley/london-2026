@@ -68,29 +68,58 @@ Makes the app installable:
 - Orientation: portrait
 - App icons at multiple sizes
 
-## Design System: "Kensington Garden" Palette
+## Design System: "The Line" (current — Session 17)
 
-Chosen by David — a springtime London theme with fresh greens and warm gold.
+As of April 2026, David & Paula's `index.html` uses a refreshed visual system called "The Line" — the itinerary renders as a single vertical tube line with each day as a station and each stop as a dot on the track. The earlier Kensington Garden tokens are retained in `:root` for backwards compatibility but the app scopes the new styles under `body.the-line`. `mom-dad/` still uses Kensington Garden.
+
+### Active tokens — The Line
+
+| Token | Light (hex) | Dark (hex) | Usage |
+|-------|-------------|------------|-------|
+| --paper | #f7f4ed | #0f1012 | Page background |
+| --paper-2 | #efeadd | #191b20 | Inset blocks (transit callouts) |
+| --ink | #0e1014 | #f2eee3 | Primary text / numerals |
+| --ink-2 | #2d3038 | #cac4b7 | Secondary text |
+| --ink-dim | #6a6e78 | #948e80 | Tertiary text, labels |
+| --hairline | #d8d3c4 | #2e3037 | Sticky bar borders, checklist dividers |
+| --hairline-strong | #0e1014 | #f2eee3 | Hero meta top border, day-head bottom border |
+| --line-day | #1f4fb8 | #6f9bff | The line itself, stop times, transit accents |
+| --line-day-soft | rgba(31,79,184,.10) | rgba(111,155,255,.18) | Stop-time pill bg |
+| --spring-gold | #c9a227 | #e7c35a | Maps button outline/fill, packing/resources pills, today ring |
+| --spring-gold-soft | rgba(201,162,39,.14) | rgba(231,195,90,.18) | Maps button fill bg |
+| --spring-green | #4a7c3a | #8cc070 | Walk transitions, reservation outline, birds chip |
+| --spring-green-soft | rgba(74,124,58,.14) | rgba(140,192,112,.16) | Walk / weather / birds bg |
+| --mjff | alias of --marathon-red (#e07800 / #f39437) | — | Marathon day accents (Race Day only) |
+| --mjff-soft | rgba(224,120,0,.12) | rgba(243,148,55,.20) | MJFF soft backgrounds, dot halo |
+
+**Typography:**
+- **Space Grotesk** (400–700) — numerals, labels, hero wordmark, day/station numbers, stop-time pills, Maps button text.
+- **Work Sans** (300–700) — body copy, stop names, details, checklist labels.
+- **DM Sans** + **Playfair Display** (legacy) — still loaded and used by untouched sections (Resources, Packing, Modal). May be retired after cleanup.
+
+Font loading: Google Fonts CSS2 import + local `@font-face` fallbacks for offline first-load.
+
+### Legacy tokens — "Kensington Garden" (still defined)
+
+Retained in `:root` so any untouched section or future subagent that still references the old names works. `mom-dad/` app uses these natively.
 
 | Token | Hex | Usage |
 |-------|-----|-------|
-| --bg | #f7f5f0 | Main background |
+| --bg | #f7f5f0 | Main background (legacy) |
 | --card | #ffffff | Card backgrounds |
 | --card-border | #e8e2d8 | Card borders, dividers |
-| --primary | #2d5a3d | Headings, day numbers, nav active |
+| --primary | #2d5a3d | Headings, day numbers, nav active (legacy) |
 | --primary-light | #4a8c62 | Secondary green accents |
-| --accent | #c07d3e | Times, gold accents |
+| --accent | #c07d3e | Times, gold accents (legacy) |
 | --accent-light | #d4a253 | Lighter gold touches |
 | --text | #2c2c2c | Body text |
 | --text-dim | #7a7568 | Secondary/detail text |
-| --tag-reservation | #c07d3e | Reservation tag color |
-| --tag-ticket | #3a7ca5 | Ticket tag color |
-| --marathon-red | #e07800 | Marathon day accent (MJFF orange) |
-| --marathon-bg | #fef6ed | Marathon day card bg |
-| --transport-bg | #eef4f8 | Transport callout bg |
-| --transport-border | #b8d4e8 | Transport callout border |
-
-**Typography:** Playfair Display (headings, 700) + DM Sans (body, 300–600)
+| --tag-reservation | #c07d3e | Reservation tag color (legacy) |
+| --tag-ticket | #3a7ca5 | Ticket tag color (legacy) |
+| --marathon-red | #e07800 | Marathon day accent (MJFF orange — canonical source of truth, aliased by `--mjff`) |
+| --marathon-bg | #fef6ed | Marathon day card bg (legacy) |
+| --transport-bg | #eef4f8 | Transport callout bg (legacy) |
+| --transport-border | #b8d4e8 | Transport callout border (legacy) |
 
 ## Ticket Embedding Strategy
 
