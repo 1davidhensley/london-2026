@@ -1,5 +1,5 @@
 // London 2026 Trip App — Service Worker v1.0
-const CACHE_NAME = 'london-2026-v22';
+const CACHE_NAME = 'london-2026-v24';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -8,6 +8,8 @@ const ASSETS_TO_CACHE = [
   './tickets/westminster-abbey.pdf',
   './tickets/british-museum.pdf',
   './tickets/churchill-war-rooms.pdf',
+  './tickets/visa-david.pdf',
+  './tickets/visa-paula.pdf',
   'https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@700&family=Space+Grotesk:wght@400;500;600;700&family=Work+Sans:wght@300;400;500;600;700&display=swap'
 ];
 

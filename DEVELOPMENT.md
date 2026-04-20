@@ -612,3 +612,47 @@ Also emailed David and Paula a plain-English update-instructions guide (draft in
 **Open items:**
 - If anything in the Kensington Garden palette is visually referenced elsewhere (haven't found any — Resources/Packing/Modal still work) the old `--bg / --card / --primary / --accent / ...` tokens remain defined for backwards compatibility. Can be dead-code swept after a successful David+Paula install.
 - `mom-dad/` app not updated — per handoff, the visual refresh is D&P-only. If David wants the Line treatment for his parents' app later, that's a separate effort.
+
+### Session 18 — April 20, 2026 — Arrival-day visas, ATM, and driver pickup
+
+**What:** David leaves for Heathrow tonight and wanted Day 21 (Arrival Day) to carry everything the app needs to serve at the jetway: UK ETAs as tickets (like the museum PDFs), guidance on where to get cash in T3 Arrivals, and the Hotel Café Royal driver pickup details straight from the concierge thread.
+
+**Data sources (Gmail, pulled in-session):**
+- **David's ETA** — thread `198b43e684d09e19`, notification from `uk.visas.and.immigration.home.office@notifications.service.gov.uk` on 2025-08-16. Ref `2020-0000-3057-2740`, passport ending `2400`, valid to 16 Aug 2027.
+- **Paula's ETA** — thread `19dab6f4c606561d`, forwarded today from `bridsp@gmail.com`. Ref `2020-0000-3066-7871`, passport ending `5840`, valid to 17 Aug 2027.
+- **Driver** — thread `19cb109e9d48c7d4` (`Hotel Cafe Royal Requests re:David Hensley`). Concierge Pierre-Emmanuel confirmed BMW i7, £195 charged to room, named sign outside customs at T3, £100/hr surcharge if the flight is delayed without warning. Hotel main line `+44 20 7406 3301`, email `Concierge@hotelcaferoyal.com`. Note: the concierge's confirmation email used a stale template row (Mercedes S-Class / EK001 / 18/09/25); David corrected the row in his reply on 2026-03-06 to `21/04/26 · DL0020 @ 3:35 · LHR T3 · BMW i7 · £195`. The hotel did not send a further confirmation after that edit — for the trip itself, the booked car/flight/date are as David corrected; all logistics language (named sign, cancellation terms, delay surcharge) is from the concierge's original.
+
+**PDFs:**
+Both ETAs are **digital** — GOV.UK explicitly says "You do not need to print or show this confirmation email." But the user asked for them "like the other tickets are done," and having a one-page reference in the offline cache means if a border officer or airline agent asks for the ref number, it's one tap away on the Tube with no signal. Generated two minimal letter-size PDFs (`tickets/visa-david.pdf`, `tickets/visa-paula.pdf`) with name, ETA reference, passport-tail, validity date, and a "at the UK border" callout block. Script is checked in at `scripts/generate_visa_pdfs.py` (uses reportlab — one-time `py -m pip install reportlab`; re-run only if the visa data changes). The script explicitly labels the output "not an official government document" so nobody mistakes a cached reference card for a real state-issued record.
+
+**`dayData` changes (Day 21 only):**
+The arrival day went from 5 stops to 7. The original two stops stayed (Check in, LEGO, Dinner) but their leading three stops were replaced and expanded:
+
+| Time | Stop | What it carries |
+|------|------|----------------|
+| 3:30 pm | ✈️ Land at Heathrow — Terminal 3 | DL0020 signage breadcrumb: UK Border → Baggage Reclaim → Nothing to Declare. Explicitly says ETAs are digital, passports only. |
+| 3:45 pm | 🛂 UK Border — ETAs on file | Both refs + passport tails + validity inline in `.stop-details`. **Two** `.ticket-btn-large` buttons embedded directly in the details HTML (calling `viewTicket()` for each PDF). See design note below. |
+| 4:15 pm | 💷 Cash — ATM in Arrivals | Generic LHR T3 guidance (no fabricated brand locations). Core tips: prefer bank-branded ATMs over Travelex; always choose "Pay in GBP" to avoid dynamic-currency-conversion rip-off; £100–£200 is plenty since contactless is universal. |
+| 4:30 pm | 🚗 Driver pickup — BMW i7 | Pierre-Emmanuel's logistics verbatim in spirit: driver outside customs with named sign, £195 on room bill, fallback to call hotel if sign not visible. Phone and email rendered as `tel:` and `mailto:` anchors so a tap on Android goes straight to the dialer. |
+
+**Design note on the visa stop:** Each stop's `tickets: { name, pdf }` schema only supports **one** ticket per stop. Rather than split into two back-to-back stops (one per person, which reads awkwardly on a timeline), both visa view buttons are embedded directly inside the `.stop-details` HTML via inline `onclick="viewTicket(...)"`. The `viewTicket` function is defined globally on `window`, so this works from any injected HTML without any renderer changes. Verified in the live preview: clicking David's button opens the modal with `tickets/visa-david.pdf` loaded in the iframe and the header set to "David UK ETA". Pattern is reusable if any future stop needs multiple ticket buttons.
+
+**Cache:** `sw.js` `CACHE_NAME` bumped `v22` → `v23`. Added `./tickets/visa-david.pdf` and `./tickets/visa-paula.pdf` to `ASSETS_TO_CACHE` so the visa refs are available on the Tube, underground, and throughout the flight if the phone's already cached the app.
+
+**Verification in the live preview (localhost:8000 after SW purge + reload):**
+- Day 21 now renders 7 stops in the timeline (verified via DOM query).
+- UK Border stop has exactly 2 `ticket-btn-large` buttons reading "🛂 VIEW DAVID'S UK ETA" and "🛂 VIEW PAULA'S UK ETA".
+- `/tickets/visa-david.pdf` and `/tickets/visa-paula.pdf` both serve `200 OK` with `application/pdf` MIME type (2.7 KB each).
+- Clicking David's ETA button: `#ticketModal` transitions to `display: flex`, iframe `src` = `http://localhost:8000/tickets/visa-david.pdf`, modal title = "David UK ETA". Close button restores `display: none`.
+- Driver stop's `tel:+442074063301` and `mailto:Concierge@hotelcaferoyal.com` anchors render correctly.
+
+**Files touched:**
+- `index.html` — Day 21's `stops` array in `dayData` only. No renderer or CSS changes.
+- `sw.js` — `CACHE_NAME` v22 → v23, two PDFs added to `ASSETS_TO_CACHE`.
+- `tickets/visa-david.pdf` · `tickets/visa-paula.pdf` — new, ~2.7 KB each.
+- `scripts/generate_visa_pdfs.py` — new, re-runnable if data changes.
+- `DEVELOPMENT.md` — this entry.
+- `mom-dad/` — **untouched** (visas are Paula + David's only; David's parents have their own ETAs/docs that should be handled separately if needed).
+
+**Not done (needs user action):**
+- **Deploy.** Editing copy is current; the deploy copy at `C:\Users\hensl\repos\london-2026\` still has `CACHE_NAME = v22` and no visa PDFs. To ship: copy `index.html`, `sw.js`, `tickets/visa-david.pdf`, `tickets/visa-paula.pdf` from the editing copy into the deploy copy, then from `cmd` in the deploy copy: `git add -A && git commit -m "Day 21: UK ETAs, T3 ATM guidance, Hotel Café Royal driver pickup" && git push`. After push, Paula/David need to fully close and reopen the app on their phones to pick up v23 (or pull-to-refresh in Chrome). Once live, clicking the ETA buttons on the hotel Wi-Fi before the flight will prime the PDFs into the cache for offline use.
