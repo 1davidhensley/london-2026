@@ -1,5 +1,5 @@
 // London 2026 Trip App — Service Worker v1.0
-const CACHE_NAME = 'london-2026-v24';
+const CACHE_NAME = 'london-2026-v25';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

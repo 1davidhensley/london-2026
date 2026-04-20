@@ -656,3 +656,41 @@ The arrival day went from 5 stops to 7. The original two stops stayed (Check in,
 
 **Not done (needs user action):**
 - **Deploy.** Editing copy is current; the deploy copy at `C:\Users\hensl\repos\london-2026\` still has `CACHE_NAME = v22` and no visa PDFs. To ship: copy `index.html`, `sw.js`, `tickets/visa-david.pdf`, `tickets/visa-paula.pdf` from the editing copy into the deploy copy, then from `cmd` in the deploy copy: `git add -A && git commit -m "Day 21: UK ETAs, T3 ATM guidance, Hotel Café Royal driver pickup" && git push`. After push, Paula/David need to fully close and reopen the app on their phones to pick up v23 (or pull-to-refresh in Chrome). Once live, clicking the ETA buttons on the hotel Wi-Fi before the flight will prime the PDFs into the cache for offline use.
+
+### Session 19 — April 20, 2026 — Day 21 season-strip copy + Day 28 departure-day mirror
+
+Two small follow-up changes driven by "what else would make this better" after Session 18 deployed.
+
+**Season strip copy tweak (`v23` → `v24`):**
+- The three-word label on the right side of the `.season-strip` under the hero header (`"Daffodils · Plane trees · Showers"`) was generic spring flavor from Session 17. David didn't recognize it; replaced with `"David · Paula · Marathon"` to match the personal framing of the hero ("Eight days between Heathrow and home, with Wave 10 somewhere near the middle"). One-line change at index.html:2882. Cache bumped to v24.
+
+**Day 28 departure mirror (`v24` → `v25`):**
+The observation that prompted this: Day 21 arrival now has explicit UK Border / ATM / Driver stops with rich details, but Day 28 departure — which carries equal logistical weight and happens when everyone's tired at the end of the trip — still had short one-line details on several stops. Enriched 4 existing stops and added 1 new stop.
+
+Specifics:
+- **8:00 am stop renamed "Breakfast + Check out — Hotel Café Royal"** and expanded: explicit check-out reminder, itemized sanity check for the final folio (BMW i7 £195 already on bill, Fallow dinner held on card, Akasha/mini-bar/in-room), ask for emailed copy of folio for expenses/points.
+- **11:30 am Borough Market** — added prompt to call the hotel concierge from the market (~12:30) to have a cab ready at 1:30. Rationale documented: central-London Uber pickup zones around Regent Street are unreliable; hotel-dispatched cab is more dependable at departure-time pressure. Tappable `tel:+442074063301` anchor.
+- **12:45 pm Return to hotel** — added pre-flight check list in details HTML (passports, ETAs-are-digital reminder so Paula doesn't hunt for a printout, phone chargers, Delta app boarding passes, anything in the room safe).
+- **1:30 pm Taxi to LHR** — explicitly flagged: **no return transfer was pre-booked** with Hotel Café Royal (Gmail thread `19cb109e9d48c7d4` confirms only the arrival BMW i7 was arranged). Ranked fallbacks: concierge-booked cab > Uber from hotel > black cab from Regent Street rank. Rough cost estimates included.
+- **5:40 pm DL0021 departure** — added Delta confirmation `JLC9G7`, flight duration ~9h 20min, note that UK doesn't stamp passports on exit, jet-lag advice to stay awake until Seattle evening.
+- **New stop: 7:59 pm "Arrive Seattle — SEA"** — US Customs & Border Protection flow, Global Entry kiosk note, bag reclaim, rideshare pickup at 3rd-floor garage island, rough 45-min drive home estimate.
+
+Day 28 now has 12 stops (was 11). No renderer or CSS changes — all edits are inside the `dayData` array.
+
+**Cache:** `sw.js` `CACHE_NAME` bumped to `v25`. No new cacheable assets this session (the two new visa PDFs from Session 18 are already in `ASSETS_TO_CACHE`).
+
+**Verification in the live preview (localhost:8000 after SW purge + reload):**
+- Day 28 now renders 12 stops in sequence (verified via DOM query — times 8:00 AM → 7:59 PM read in chronological order).
+- 8:00 stop's `.stop-details` length grew from ~40 chars to 455 chars with the check-out/folio block.
+- 11:30 stop's details contain exactly one `<a href="tel:+442074063301">` anchor to the hotel concierge.
+- 12:45 and 1:30 stops render their new pre-flight and taxi-fallback text.
+- 7:59 stop renders as the final stop with full SEA arrival flow. Timeline dot appears at the bottom of the column as expected.
+
+**Files touched:**
+- `index.html` — Day 28's `stops` array in `dayData` only (5 stops modified, 1 added). Also `index.html:2882` season-strip copy.
+- `sw.js` — `CACHE_NAME` v23 → v24 (season strip) → v25 (Day 28 mirror).
+- `DEVELOPMENT.md` — this entry.
+- `mom-dad/` — **untouched**. Parents' app is a separate repo with its own departure logistics.
+
+**Not done (needs user action):**
+- **Deploy.** Copy `index.html`, `sw.js`, `DEVELOPMENT.md` from editing copy to `C:\Users\hensl\repos\london-2026\`, then `git add -A && git commit && git push` from the deploy copy. After push + reopen, Paula's app will pick up v25 including both the season-strip rename and the Day 28 enrichments.
